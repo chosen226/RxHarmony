@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+      /* Reset and base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding-top: 70px; /* Space for fixed navbar */
+      }
+
+      /* Navigation styles */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 1rem 2rem;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .nav-brand {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .nav-button {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+
+      .nav-button.primary {
+        background-color: #2563eb;
+        color: white;
+        border: none;
+      }
+
+      .nav-button.primary:hover {
+        background-color: #1d4ed8;
+      }
+
+      .nav-button.secondary {
+        background-color: transparent;
+        color: #1a1a1a;
+        border: 1.5px solid #e5e7eb;
+      }
+
+      .nav-button.secondary:hover {
+        background-color: #f3f4f6;
+      }
+
+      .profile-menu {
+        position: relative;
+        display: inline-block;
+      }
+
+      .profile-button {
+        padding: 0.5rem;
+        border-radius: 50%;
+        background-color: #f3f4f6;
+        border: none;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .profile-button img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+      }
+
+      .profile-dropdown {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-top: 0.5rem;
+        min-width: 200px;
+        display: none;
+      }
+
+      .profile-dropdown.active {
+        display: block;
+      }
+
+      .dropdown-item {
+        padding: 0.75rem 1rem;
+        color: #1a1a1a;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.2s ease;
+      }
+
+      .dropdown-item:hover {
+        background-color: #f3f4f6;
+      }
+
+      .dropdown-divider {
+        height: 1px;
+        background-color: #e5e7eb;
+        margin: 0.5rem 0;
+      }
+
+      /* Responsive design */
+      @media (max-width: 640px) {
+        .navbar {
+          padding: 1rem;
+        }
+
+        .nav-brand {
+          font-size: 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="{% url 'home' %}" class="nav-brand">RxHarmony</a>
+        <div class="nav-links">
+          {% if user.is_authenticated %}
+          <div class="profile-menu">
+            <button class="profile-button" id="profileButton">
+              <img
+                src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
+                alt="{{ user.username }}'s avatar"
+              />
+            </button>
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="{% url 'profile' %}" class="dropdown-item">Profile</a>
+
+              <div class="dropdown-divider"></div>
+              <form action="{% url 'logout' %}" method="POST" style="margin: 0">
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="dropdown-item"
+                  style="
+                    width: 100%;
+                    text-align: left;
+                    border: none;
+                    background: none;
+                    cursor: pointer;
+                  "
+                >
+                  Sign Out
+                </button>
+              </form>
+            </div>
+          </div>
+          {% else %}
+          <a href="{% url 'login' %}" class="nav-button secondary">Sign In</a>
+          <a href="{% url 'register' %}" class="nav-button primary">Sign Up</a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    {% block content %} {% endblock %}
+
+    <script>
+      // Profile dropdown toggle functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const profileButton = document.getElementById("profileButton");
+        const profileDropdown = document.getElementById("profileDropdown");
+
+        if (profileButton && profileDropdown) {
+          profileButton.addEventListener("click", function (e) {
+            e.stopPropagation();
+            profileDropdown.classList.toggle("active");
+          });
+
+          // Close dropdown when clicking outside
+          document.addEventListener("click", function (e) {
+            if (
+              !profileDropdown.contains(e.target) &&
+              !profileButton.contains(e.target)
+            ) {
+              profileDropdown.classList.remove("active");
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

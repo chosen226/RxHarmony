@@ -1,0 +1,443 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+   /* <style> */
+    .profile-container {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        padding: 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .section-title {
+        color: #1e293b;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+    }
+
+    .form-label {
+        display: block;
+        color: #475569;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+        height: 2.5rem;
+    }
+
+    textarea.form-input {
+        height: 5rem;
+        resize: vertical;
+    }
+
+    .form-input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    .form-select {
+        width: 100%;
+        height: 2.5rem;
+        padding: 0 0.75rem;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        background-color: white;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1rem;
+        appearance: none;
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
+    .add-button {
+        background-color: #10b981;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        height: 2.5rem;
+        min-width: 5rem;
+    }
+
+    .add-button:hover {
+        background-color: #059669;
+    }
+
+    .item-tag {
+        background-color: #f8fafc;
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        margin-bottom: 0.5rem;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.875rem;
+    }
+
+    .remove-button {
+        color: #ef4444;
+        border: none;
+        background: none;
+        padding: 0.25rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+    }
+
+    .submit-button {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0 1.5rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        height: 2.5rem;
+    }
+
+    .submit-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
+    }
+
+    .error-message {
+        background-color: #fee2e2;
+        border-left: 4px solid #dc2626;
+        color: #dc2626;
+        padding: 0.75rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        margin-top: 1rem;
+    }
+
+    .input-group {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .input-group .form-input {
+        flex: 1;
+    }
+
+    @media (max-width: 640px) {
+        .grid-2 {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .profile-card {
+            padding: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-card">
+        <h2 class="section-title">Complete Your Profile</h2>
+        <form id="profileForm">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" id="date_of_birth" name="date_of_birth" required
+                        class="form-input" value="{{ profile_data.date_of_birth }}">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Gender</label>
+                    <select id="gender" name="gender" required class="form-select">
+                        <option value="">Select gender</option>
+                        <option value="M" {% if profile_data.gender == 'M' %}selected{% endif %}>Male</option>
+                        <option value="F" {% if profile_data.gender == 'F' %}selected{% endif %}>Female</option>
+                        <option value="O" {% if profile_data.gender == 'O' %}selected{% endif %}>Other</option>
+                        <option value="N" {% if profile_data.gender == 'N' %}selected{% endif %}>Prefer not to say</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Blood Type</label>
+                    <input type="text" id="blood_type" name="blood_type" 
+                        class="form-input" placeholder="e.g., A+, B-, O+"
+                        value="{{ profile_data.blood_type }}">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Allergies</label>
+                    <textarea id="allergies" name="allergies" 
+                        class="form-input" rows="2" 
+                        placeholder="List any allergies...">{{ profile_data.allergies }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Previous Medications</label>
+                <div class="input-group">
+                    <input type="text" class="form-input medication-input" 
+                        placeholder="Enter medication name">
+                    <button type="button" class="add-button add-medication">Add</button>
+                </div>
+                <div id="medications-container"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Pre-diagnosed Conditions</label>
+                <div class="input-group">
+                    <input type="text" class="form-input condition-input" 
+                        placeholder="Enter condition">
+                    <button type="button" class="add-button add-condition">Add</button>
+                </div>
+                <div id="conditions-container"></div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Emergency Contact</label>
+                    <input type="text" id="emergency_contact" name="emergency_contact"
+                        class="form-input" placeholder="Full name"
+                        value="{{ profile_data.emergency_contact }}">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Emergency Contact Phone</label>
+                    <input type="tel" id="emergency_contact_phone" 
+                        name="emergency_contact_phone" class="form-input" 
+                        placeholder="Phone number"
+                        value="{{ profile_data.emergency_contact_phone }}">
+                </div>
+            </div>
+
+            <div style="text-align: right; margin-top: 1rem;">
+                <button type="submit" class="submit-button">
+                    Save Profile
+                </button>
+            </div>
+        </form>
+        <div id="error-message" class="error-message hidden"></div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const medications = new Set();
+        const conditions = new Set();
+
+        // Safe initialization with try-catch
+        try {
+            const existingMedications = JSON.parse('{{ profile_data.medications_json|safe }}');
+            const existingConditions = JSON.parse('{{ profile_data.conditions_json|safe }}');
+
+            // Load existing medications with validation
+            if (Array.isArray(existingMedications)) {
+                existingMedications.forEach(medication => {
+                    if (medication) {  // validate the data
+                        medications.add(medication);
+                        const medContainer = document.getElementById('medications-container');
+                        const medDiv = createItemTag(medication, 'medication');
+                        medContainer.appendChild(medDiv);
+                    }
+                });
+            }
+
+            // Load existing conditions with validation
+            if (Array.isArray(existingConditions)) {
+                existingConditions.forEach(condition => {
+                    if (condition) {  // validate the data
+                        conditions.add(condition);
+                        const condContainer = document.getElementById('conditions-container');
+                        const condDiv = createItemTag(condition, 'condition');
+                        condContainer.appendChild(condDiv);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error initializing data:', error);
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = 'Error loading profile data. Please refresh the page.';
+            errorDiv.classList.remove('hidden');
+        }
+
+        function createItemTag(text, type) {
+            const div = document.createElement('div');
+            div.className = 'item-tag';
+            div.innerHTML = `
+                <span class="text-gray-800">${text}</span>
+                <button type="button" class="remove-button remove-${type}">
+                    Remove
+                </button>
+            `;
+            return div;
+        }
+
+        // Medication handling
+        document.querySelector('.add-medication').addEventListener('click', () => {
+            const input = document.querySelector('.medication-input');
+            const medication = input.value.trim();
+            
+            if (medication && !medications.has(medication)) {
+                medications.add(medication);
+                const container = document.getElementById('medications-container');
+                container.appendChild(createItemTag(medication, 'medication'));
+                input.value = '';
+            }
+        });
+
+        // Condition handling
+        document.querySelector('.add-condition').addEventListener('click', () => {
+            const input = document.querySelector('.condition-input');
+            const condition = input.value.trim();
+            
+            if (condition && !conditions.has(condition)) {
+                conditions.add(condition);
+                const container = document.getElementById('conditions-container');
+                container.appendChild(createItemTag(condition, 'condition'));
+                input.value = '';
+            }
+        });
+
+        // Remove handlers
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-medication')) {
+                const medText = e.target.parentElement.querySelector('span').textContent;
+                medications.delete(medText);
+                e.target.parentElement.remove();
+            }
+            if (e.target.classList.contains('remove-condition')) {
+                const condText = e.target.parentElement.querySelector('span').textContent;
+                conditions.delete(condText);
+                e.target.parentElement.remove();
+            }
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const errorDiv = document.getElementById('error-message');
+            const submitButton = e.target.querySelector('.submit-button');
+            
+            try {
+                errorDiv.classList.add('hidden');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Saving...';
+
+                // Validate data before sending
+                const formData = {
+                    date_of_birth: document.getElementById('date_of_birth').value,
+                    gender: document.getElementById('gender').value,
+                    blood_type: document.getElementById('blood_type').value,
+                    allergies: document.getElementById('allergies').value,
+                    emergency_contact: document.getElementById('emergency_contact').value,
+                    emergency_contact_phone: document.getElementById('emergency_contact_phone').value,
+                    medications: Array.from(medications),
+                    conditions: Array.from(conditions)
+                };
+
+                // Validate required fields
+                if (!formData.date_of_birth || !formData.gender) {
+                    throw new Error('Please fill in all required fields');
+                }
+
+                const response = await fetch('/profile/setup/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'An error occurred while saving your profile.');
+                }
+
+                window.location.href = data.redirect_url;
+            } catch (error) {
+                errorDiv.textContent = error.message || 'An error occurred. Please try again.';
+                errorDiv.classList.remove('hidden');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Save Profile';
+            }
+        });
+
+        // Add keyboard event listeners for input fields
+        document.querySelector('.medication-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.querySelector('.add-medication').click();
+            }
+        });
+
+        document.querySelector('.condition-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.querySelector('.add-condition').click();
+            }
+        });
+    });
+</script>
+   
+{% endblock %}

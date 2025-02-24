@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+      .profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .profile-title {
+        color: #111827;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .header-buttons {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .edit-button {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .prescription-button {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .edit-button:hover, .prescription-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 640px) {
+        .profile-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .header-buttons {
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        .edit-button, .prescription-button {
+            flex: 1;
+            text-align: center;
+        }
+    }
+    .profile-page {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        padding: 2rem 1rem;
+    }
+
+    .profile-container {
+        max-width: 64rem;
+        margin: 0 auto;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .profile-card:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .profile-title {
+        color: #111827;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .edit-button {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .edit-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
+    }
+
+    .section-title {
+        color: #1f2937;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+        .info-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    .info-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .info-label {
+        color: #6b7280;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        color: #111827;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .info-box {
+        background-color: #f9fafb;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .info-list li {
+        color: #111827;
+        font-size: 0.875rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .info-list li:last-child {
+        border-bottom: none;
+    }
+
+    .empty-state {
+        color: #6b7280;
+        font-size: 0.875rem;
+        font-style: italic;
+    }
+
+    .medical-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .medical-label {
+        color: #6b7280;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .medical-content {
+        background-color: #f9fafb;
+        border-radius: 8px;
+        padding: 1rem;
+        color: #111827;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    .medical-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .medical-list li {
+        position: relative;
+        padding-left: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .medical-list li::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #6b7280;
+    }
+</style>
+
+<div class="profile-page">
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <h1 class="profile-title">Profile Information</h1>
+                <a href="{% url 'profile_setup' %}" class="edit-button">
+                    Edit Profile
+                </a>
+                <a href="{% url 'profile_setup' %}" class="edit-button">
+get Prescription                </a>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3 class="info-label">Email</h3>
+                    <p class="info-value">{{ user.email }}</p>
+                </div>
+                <div class="info-item">
+                    <h3 class="info-label">Date of Birth</h3>
+                    <p class="info-value">
+                        {% if profile.date_of_birth %}
+                            {{ profile.date_of_birth|date:"F j, Y" }}
+                        {% else %}
+                            <span class="empty-state">Not provided</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="info-item">
+                    <h3 class="info-label">Gender</h3>
+                    <p class="info-value">
+                        {% if profile.gender %}
+                            {{ profile.get_gender_display }}
+                        {% else %}
+                            <span class="empty-state">Not provided</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="info-item">
+                    <h3 class="info-label">Blood Type</h3>
+                    <p class="info-value">
+                        {% if profile.blood_type %}
+                            {{ profile.blood_type }}
+                        {% else %}
+                            <span class="empty-state">Not provided</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medical Information -->
+        <div class="profile-card">
+            <h2 class="section-title">Medical Information</h2>
+            
+            <div class="medical-section">
+                <h3 class="medical-label">Allergies</h3>
+                <div class="medical-content">
+                    {% if profile.allergies %}
+                        {{ profile.allergies|linebreaks }}
+                    {% else %}
+                        <span class="empty-state">No allergies listed</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="medical-section">
+                <h3 class="medical-label">Previous Medications</h3>
+                <div class="medical-content">
+                    {% if medications %}
+                        <ul class="medical-list">
+                            {% for medication in medications %}
+                                <li>{{ medication.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <span class="empty-state">No medications listed</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Pre-diagnosed Conditions Section -->
+            <div class="medical-section">
+                <h3 class="medical-label">Pre-diagnosed Conditions</h3>
+                <div class="medical-content">
+                    {% if conditions %}
+                        <ul class="medical-list">
+                            {% for condition in conditions %}
+                                <li>{{ condition.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <span class="empty-state">No conditions listed</span>
+                    {% endif %}
+                </div>
+            </div>
+
+        <!-- Emergency Contact -->
+        <div class="profile-card">
+            <h2 class="section-title">Emergency Contact</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3 class="info-label">Contact Name</h3>
+                    <p class="info-value">
+                        {% if profile.emergency_contact %}
+                            {{ profile.emergency_contact }}
+                        {% else %}
+                            <span class="empty-state">Not provided</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="info-item">
+                    <h3 class="info-label">Contact Phone</h3>
+                    <p class="info-value">
+                        {% if profile.emergency_contact_phone %}
+                            {{ profile.emergency_contact_phone }}
+                        {% else %}
+                            <span class="empty-state">Not provided</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

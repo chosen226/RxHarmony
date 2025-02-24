@@ -1,0 +1,248 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    background-color: #f5f7fa;
+  }
+
+  .container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .login-card {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .login-title {
+    color: #1a1a1a;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+  }
+
+  .login-subtitle {
+    color: #666;
+    font-size: 16px;
+    margin: 0 0 32px 0;
+  }
+
+  .form-group {
+    margin-bottom: 24px;
+  }
+
+  .form-label {
+    display: block;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  .submit-button {
+    width: 100%;
+    padding: 14px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+  }
+
+  .submit-button:hover {
+    background-color: #1d4ed8;
+  }
+
+  .submit-button:active {
+    transform: translateY(1px);
+  }
+
+  .error-message {
+    background-color: #fee2e2;
+    border-left: 4px solid #dc2626;
+    color: #dc2626;
+    padding: 12px;
+    margin-top: 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    display: none;
+  }
+
+  .error-message.visible {
+    display: block;
+  }
+
+  .register-link {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .register-link a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .register-link a:hover {
+    text-decoration: underline;
+  }
+
+  .forgot-password {
+    text-align: right;
+    margin-top: -16px;
+    margin-bottom: 24px;
+  }
+
+  .forgot-password a {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .forgot-password a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="container">
+  <div class="login-card">
+    <h1 class="login-title">Welcome Back</h1>
+    <p class="login-subtitle">Log in to your account</p>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label" for="email">Email address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-input"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="form-input"
+          placeholder="Enter your password"
+          required
+        />
+      </div>
+
+      <div class="forgot-password">
+        <a href="/forgot-password/">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="submit-button">Log In</button>
+    </form>
+
+    <div id="error-message" class="error-message"></div>
+
+    <div class="register-link">
+      Don't have an account? <a href="/register/">Sign up</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("loginForm");
+    const errorDiv = document.getElementById("error-message");
+    const submitButton = form.querySelector(".submit-button");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      errorDiv.classList.remove("visible");
+      submitButton.disabled = true;
+      submitButton.textContent = "Logging in...";
+
+      const formData = {
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+      };
+
+      try {
+        const response = await fetch("/login/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          errorDiv.textContent = data.error;
+          errorDiv.classList.add("visible");
+          submitButton.disabled = false;
+          submitButton.textContent = "Log In";
+          return;
+        }
+
+        window.location.href = data.redirect_url;
+      } catch (error) {
+        errorDiv.textContent = "An error occurred. Please try again.";
+        errorDiv.classList.add("visible");
+        submitButton.disabled = false;
+        submitButton.textContent = "Log In";
+      }
+    });
+  });
+</script>
+{% endblock %}
