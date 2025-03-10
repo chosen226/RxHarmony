@@ -50,3 +50,15 @@ class ProfileForm(forms.ModelForm):
         # Make all fields not required since we want to allow partial profile completion
         for field in self.fields:
             self.fields[field].required = False
+from django import forms
+from .models import Medication
+
+class MedicationForm(forms.ModelForm):
+    class Meta:
+        model = Medication
+        fields = ['name', 'description', 'refill_date', 'frequency_per_day', 'tablets_per_dose']
+        widgets = {
+            'refill_date': forms.DateInput(attrs={'type': 'date'}),
+            'frequency_per_day': forms.NumberInput(attrs={'min': 1, 'max': 10}),
+            'tablets_per_dose': forms.NumberInput(attrs={'min': 0.25, 'step': 0.25}),
+        }
