@@ -1,357 +1,435 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <style>
-      .profile-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #e5e7eb;
-    }
+  .profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
 
-    .profile-title {
-        color: #111827;
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin: 0;
+  .profile-title {
+    color: #111827;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .header-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .edit-button {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .prescription-button {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .edit-button:hover,
+  .prescription-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 640px) {
+    .profile-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
     }
 
     .header-buttons {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
+      width: 100%;
+      justify-content: flex-start;
     }
 
-    .edit-button {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        text-decoration: none;
-        transition: all 0.2s ease;
-    }
-
+    .edit-button,
     .prescription-button {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        text-decoration: none;
-        transition: all 0.2s ease;
+      flex: 1;
+      text-align: center;
     }
+  }
+  .profile-page {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
 
-    .edit-button:hover, .prescription-button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
+  .profile-container {
+    max-width: 64rem;
+    margin: 0 auto;
+  }
 
-    @media (max-width: 640px) {
-        .profile-header {
-            flex-direction: column;
-            gap: 1rem;
-            align-items: flex-start;
-        }
+  .profile-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.3s ease;
+  }
 
-        .header-buttons {
-            width: 100%;
-            justify-content: flex-start;
-        }
+  .profile-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
 
-        .edit-button, .prescription-button {
-            flex: 1;
-            text-align: center;
-        }
-    }
-    .profile-page {
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        min-height: 100vh;
-        padding: 2rem 1rem;
-    }
+  .profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
 
-    .profile-container {
-        max-width: 64rem;
-        margin: 0 auto;
-    }
+  .profile-title {
+    color: #111827;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+  }
 
-    .profile-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        transition: box-shadow 0.3s ease;
-    }
+  .edit-button {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
 
-    .profile-card:hover {
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
+  .edit-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
+  }
 
-    .profile-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #e5e7eb;
-    }
+  .section-title {
+    color: #1f2937;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
 
-    .profile-title {
-        color: #111827;
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin: 0;
-    }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+  }
 
-    .edit-button {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        text-decoration: none;
-        transition: all 0.2s ease;
-    }
-
-    .edit-button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
-    }
-
-    .section-title {
-        color: #1f2937;
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-
+  @media (min-width: 768px) {
     .info-grid {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        gap: 1.5rem;
+      grid-template-columns: repeat(2, 1fr);
     }
+  }
 
-    @media (min-width: 768px) {
-        .info-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
+  .info-item {
+    margin-bottom: 0.5rem;
+  }
 
-    .info-item {
-        margin-bottom: 0.5rem;
-    }
+  .info-label {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
 
-    .info-label {
-        color: #6b7280;
-        font-size: 0.875rem;
-        font-weight: 500;
-        margin-bottom: 0.25rem;
-    }
+  .info-value {
+    color: #111827;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
 
-    .info-value {
-        color: #111827;
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-    }
+  .info-box {
+    background-color: #f9fafb;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
 
-    .info-box {
-        background-color: #f9fafb;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-    }
+  .info-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
 
-    .info-list {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
+  .info-list li {
+    color: #111827;
+    font-size: 0.875rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
 
-    .info-list li {
-        color: #111827;
-        font-size: 0.875rem;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #e5e7eb;
-    }
+  .info-list li:last-child {
+    border-bottom: none;
+  }
 
-    .info-list li:last-child {
-        border-bottom: none;
-    }
+  .empty-state {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-style: italic;
+  }
 
-    .empty-state {
-        color: #6b7280;
-        font-size: 0.875rem;
-        font-style: italic;
-    }
+  .medical-section {
+    margin-bottom: 1.5rem;
+  }
 
-    .medical-section {
-        margin-bottom: 1.5rem;
-    }
+  .medical-label {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
 
-    .medical-label {
-        color: #6b7280;
-        font-size: 0.875rem;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-    }
+  .medical-content {
+    background-color: #f9fafb;
+    border-radius: 8px;
+    padding: 1rem;
+    color: #111827;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
 
-    .medical-content {
-        background-color: #f9fafb;
-        border-radius: 8px;
-        padding: 1rem;
-        color: #111827;
-        font-size: 0.875rem;
-        line-height: 1.5;
-    }
+  .medical-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
 
-    .medical-list {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
+  .medical-list li {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
 
-    .medical-list li {
-        position: relative;
-        padding-left: 1.25rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .medical-list li::before {
-        content: "•";
-        position: absolute;
-        left: 0;
-        color: #6b7280;
-    }
+  .medical-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #6b7280;
+  }
 </style>
 
 <div class="profile-page">
-    <div class="profile-container">
-        <!-- Profile Header -->
-        <div class="profile-card">
-            <div class="profile-header">
-                <h1 class="profile-title">Profile Information</h1>
-                <a href="{% url 'profile_setup' %}" class="edit-button">
-                    Edit Profile
-                </a>
-                <a href="{% url 'profile_setup' %}" class="edit-button">
-get Prescription                </a>
-            </div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <h3 class="info-label">Email</h3>
-                    <p class="info-value">{{ user.email }}</p>
-                </div>
-                <div class="info-item">
-                    <h3 class="info-label">Date of Birth</h3>
-                    <p class="info-value">
-                        {% if profile.date_of_birth %}
-                            {{ profile.date_of_birth|date:"F j, Y" }}
-                        {% else %}
-                            <span class="empty-state">Not provided</span>
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="info-item">
-                    <h3 class="info-label">Gender</h3>
-                    <p class="info-value">
-                        {% if profile.gender %}
-                            {{ profile.get_gender_display }}
-                        {% else %}
-                            <span class="empty-state">Not provided</span>
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="info-item">
-                    <h3 class="info-label">Blood Type</h3>
-                    <p class="info-value">
-                        {% if profile.blood_type %}
-                            {{ profile.blood_type }}
-                        {% else %}
-                            <span class="empty-state">Not provided</span>
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
+  <div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-card">
+      <div class="profile-header">
+        <h1 class="profile-title">Profile Information</h1>
+        <a href="{% url 'profile_setup' %}" class="edit-button">
+          Edit Profile
+        </a>
+        <a href="{% url 'profile_setup' %}" class="edit-button">
+          get Prescription
+        </a>
+        <a href="{% url 'change_password_page' %}" class="edit-button">
+          Change Password
+        </a>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <h3 class="info-label">Email</h3>
+          <p class="info-value">{{ user.email }}</p>
         </div>
-
-        <!-- Medical Information -->
-        <div class="profile-card">
-            <h2 class="section-title">Medical Information</h2>
-            
-            <div class="medical-section">
-                <h3 class="medical-label">Allergies</h3>
-                <div class="medical-content">
-                    {% if profile.allergies %}
-                        {{ profile.allergies|linebreaks }}
-                    {% else %}
-                        <span class="empty-state">No allergies listed</span>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="medical-section">
-                <h3 class="medical-label">Previous Medications</h3>
-                <div class="medical-content">
-                    {% if medications %}
-                        <ul class="medical-list">
-                            {% for medication in medications %}
-                                <li>{{ medication.name }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <span class="empty-state">No medications listed</span>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <!-- Pre-diagnosed Conditions Section -->
-            <div class="medical-section">
-                <h3 class="medical-label">Pre-diagnosed Conditions</h3>
-                <div class="medical-content">
-                    {% if conditions %}
-                        <ul class="medical-list">
-                            {% for condition in conditions %}
-                                <li>{{ condition.name }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <span class="empty-state">No conditions listed</span>
-                    {% endif %}
-                </div>
-            </div>
-
-        <!-- Emergency Contact -->
-        <div class="profile-card">
-            <h2 class="section-title">Emergency Contact</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <h3 class="info-label">Contact Name</h3>
-                    <p class="info-value">
-                        {% if profile.emergency_contact %}
-                            {{ profile.emergency_contact }}
-                        {% else %}
-                            <span class="empty-state">Not provided</span>
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="info-item">
-                    <h3 class="info-label">Contact Phone</h3>
-                    <p class="info-value">
-                        {% if profile.emergency_contact_phone %}
-                            {{ profile.emergency_contact_phone }}
-                        {% else %}
-                            <span class="empty-state">Not provided</span>
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
+        <div class="info-item">
+          <h3 class="info-label">Date of Birth</h3>
+          <p class="info-value">
+            {% if profile.date_of_birth %} {{ profile.date_of_birth }} {% else%}
+            <span class="empty-state">Not provided</span>
+            {% endif %}
+          </p>
         </div>
+        <div class="info-item">
+          <h3 class="info-label">Gender</h3>
+          <p class="info-value">
+            {% if profile.gender %} {{ profile.get_gender_display }} {% else %}
+            <span class="empty-state">Not provided</span>
+            {% endif %}
+          </p>
+        </div>
+        <div class="info-item">
+          <h3 class="info-label">Blood Type</h3>
+          <p class="info-value">
+            {% if profile.blood_type %} {{ profile.blood_type }} {% else %}
+            <span class="empty-state">Not provided</span>
+            {% endif %}
+          </p>
+        </div>
+      </div>
     </div>
+
+    <!-- Medical Information -->
+    <div class="profile-card">
+      <h2 class="section-title">Medical Information</h2>
+
+      <div class="medical-section">
+        <h3 class="medical-label">Allergies</h3>
+        <div class="medical-content">
+          {% if profile.allergies %} {{ profile.allergies|linebreaks }} {%else%}
+          <span class="empty-state">No allergies listed</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="medical-section">
+        <h3 class="medical-label">Previous Medications</h3>
+        <div class="medical-content">
+          {% if medications %}
+          <ul class="medical-list">
+            {% for medication in medications %}
+            <li>{{ medication.name }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <span class="empty-state">No medications listed</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Pre-diagnosed Conditions Section -->
+      <div class="medical-section">
+        <h3 class="medical-label">Pre-diagnosed Conditions</h3>
+        <div class="medical-content">
+          {% if conditions %}
+          <ul class="medical-list">
+            {% for condition in conditions %}
+            <li>{{ condition.name }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <span class="empty-state">No conditions listed</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Emergency Contact -->
+      <div class="profile-card">
+        <h2 class="section-title">Emergency Contact</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <h3 class="info-label">Contact Name</h3>
+            <p class="info-value">
+              {% if profile.emergency_contact %} {{ profile.emergency_contact }}
+              {% else %}
+              <span class="empty-state">Not provided</span>
+              {% endif %}
+            </p>
+          </div>
+          <div class="info-item">
+            <h3 class="info-label">Contact Phone</h3>
+            <p class="info-value">
+              {% if profile.emergency_contact_phone %} {{
+              profile.emergency_contact_phone }} {% else %}
+              <span class="empty-state">Not provided</span>
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function show_change_password() {}
+    // Function to submit the password change
+    function submitPasswordChange() {
+      const currentPassword = document.getElementById("currentPassword").value;
+      const newPassword = document.getElementById("newPassword").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const errorDiv = document.getElementById("passwordError");
+
+      // Reset error message
+      errorDiv.style.display = "none";
+
+      // Validate form
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        errorDiv.textContent = "All fields are required.";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        errorDiv.textContent = "New passwords do not match.";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      // Create request data
+      const data = {
+        current_password: currentPassword,
+        new_password: newPassword,
+      };
+
+      // Send request to server
+      fetch("/changepw", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCsrfToken(), // Get CSRF token function defined below
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Password changed successfully, close modal and show success message
+            document.getElementById("passwordChangeModal").remove();
+            alert("Password changed successfully!");
+          } else {
+            // Show error message
+            errorDiv.textContent =
+              data.error || "An error occurred while changing the password.";
+            errorDiv.style.display = "block";
+          }
+        })
+        .catch((error) => {
+          errorDiv.textContent = "An error occurred. Please try again.";
+          errorDiv.style.display = "block";
+          console.error("Error:", error);
+        });
+    }
+
+    // Function to get CSRF token from cookies
+    function getCsrfToken() {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Django CSRF token is stored in a cookie named 'csrftoken'
+          if (
+            cookie.substring(0, "csrftoken".length + 1) ===
+            "csrftoken" + "="
+          ) {
+            cookieValue = decodeURIComponent(
+              cookie.substring("csrftoken".length + 1)
+            );
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  </script>
 </div>
 {% endblock %}

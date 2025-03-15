@@ -1,0 +1,84 @@
+{% extends 'base.html' %} {% block title %} {% if medication %}Edit{% else
+%}Add{% endif %} Medication {% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          <h2>{% if medication %}Edit{% else %}Add{% endif %} Medication</h2>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="{{ form.name.id_for_label }}" class="form-label"
+                >Name</label
+              >
+              {{ form.name }} {% if form.name.errors %}
+              <div class="text-danger">{{ form.name.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label
+                for="{{ form.description.id_for_label }}"
+                class="form-label"
+                >Description</label
+              >
+              {{ form.description }} {% if form.description.errors %}
+              <div class="text-danger">{{ form.description.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label
+                for="{{ form.refill_date.id_for_label }}"
+                class="form-label"
+                >Refill Date</label
+              >
+              {{ form.refill_date }} {% if form.refill_date.errors %}
+              <div class="text-danger">{{ form.refill_date.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label
+                for="{{ form.frequency_per_day.id_for_label }}"
+                class="form-label"
+                >Times per Day</label
+              >
+              {{ form.frequency_per_day }} {% if form.frequency_per_day.errors
+              %}
+              <div class="text-danger">{{ form.frequency_per_day.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label
+                for="{{ form.tablets_per_dose.id_for_label }}"
+                class="form-label"
+                >Tablets per Dose</label
+              >
+              {{ form.tablets_per_dose }} {% if form.tablets_per_dose.errors %}
+              <div class="text-danger">{{ form.tablets_per_dose.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <a
+                href="{% url 'medication_dashboard' %}"
+                class="btn btn-secondary"
+                >Cancel</a
+              >
+              <button type="submit" class="btn btn-primary">
+                {% if medication %}Update{% else %}Save{% endif %} Medication
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
