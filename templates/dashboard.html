@@ -195,7 +195,7 @@
       </div>
     </div>
 
-    <!-- Medication Item Template (Hidden) -->
+    <!-- Medication Item Template with Remaining Tablets Bar -->
     <template id="medicationItemTemplate">
       <div class="card medication-card mb-3">
         <div class="card-body">
@@ -212,7 +212,7 @@
           </div>
           <div class="medication-details">
             <p class="card-text description"></p>
-            <div class="row">
+            <div class="row mb-2">
               <div class="col-md-4">
                 <strong>Refill Date:</strong> <span class="refill-date"></span>
               </div>
@@ -222,6 +222,24 @@
               </div>
               <div class="col-md-4">
                 <strong>Tablets:</strong> <span class="tablets"></span> per dose
+              </div>
+            </div>
+            <!-- Remaining Tablets Progress Bar -->
+            <div class="row">
+              <div class="col-12 mb-1">
+                <strong>Remaining:</strong>
+                <span class="remaining-count"></span>
+              </div>
+              <div class="col-12">
+                <div class="progress" style="height: 20px">
+                  <div
+                    class="remaining-bar progress-bar bg-primary"
+                    role="progressbar"
+                    aria-valuenow="100"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
               </div>
             </div>
           </div>
@@ -252,7 +270,8 @@
                   <input
                     type="number"
                     class="form-control edit-tablets"
-                    min="1"
+                    min="0.5"
+                    step="0.5"
                     required
                   />
                 </div>
@@ -263,6 +282,17 @@
                   class="form-control edit-description"
                   rows="2"
                 ></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Remaining Tablets</label>
+                <input
+                  type="number"
+                  class="form-control edit-remaining-tablets"
+                  min="0"
+                  max="30"
+                  step="0.5"
+                  required
+                />
               </div>
               <div>
                 <button type="submit" class="btn btn-primary save-changes">
@@ -277,7 +307,6 @@
         </div>
       </div>
     </template>
-
     <!-- Daily Tracking Template (Hidden) -->
     <template id="dailyTrackingTemplate">
       <div class="card medication-card mb-3">
@@ -323,6 +352,7 @@
       });
 
       // Fetch medications from the server
+      // Fetch medications from the server
       function fetchMedications() {
         fetch("/api/medications/")
           .then((response) => {
@@ -332,7 +362,17 @@
             return response.json();
           })
           .then((data) => {
-            medications = data;
+            // Make sure we're using the medications array from the response
+            medications = data.medications; // This is the key change
+
+            // Debug output to console
+            console.log("Received medications data:", medications);
+
+            if (!Array.isArray(medications)) {
+              console.error("medications is not an array:", medications);
+              medications = []; // Fallback to empty array to prevent errors
+            }
+
             loadMedications();
             loadDailyTracking();
           })
@@ -343,7 +383,6 @@
             ).innerHTML = `<div class="alert alert-danger">Error loading medications: ${error.message}</div>`;
           });
       }
-
       // Load medications into the manage tab
       function loadMedications() {
         const medicationsList = document.getElementById("medicationsList");
@@ -407,7 +446,53 @@
           medicationsList.appendChild(clone);
         });
       }
+      function saveMedicationChanges(card) {
+        const medId = parseInt(card.dataset.id);
 
+        const updatedMed = {
+          id: medId,
+          name: card.querySelector(".edit-name").value,
+          description: card.querySelector(".edit-description").value,
+          refill_date: card.querySelector(".edit-refill").value,
+          frequency_per_day: parseInt(
+            card.querySelector(".edit-frequency").value
+          ),
+          tablets_per_dose: parseFloat(
+            card.querySelector(".edit-tablets").value
+          ),
+          remaining_tablets: parseFloat(
+            card.querySelector(".edit-remaining-tablets").value
+          ),
+        };
+
+        // Send the updated medication to the server
+        fetch(`/api/medications/${medId}/`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCsrfToken(),
+          },
+          body: JSON.stringify(updatedMed),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            // After successful update, refresh the medications
+            fetchMedications();
+            toggleEditMode(card);
+          })
+          .catch((error) => {
+            console.error("Error updating medication:", error);
+            alert(`Error updating medication: ${error.message}`);
+          });
+      }
+
+      // Load daily tracking tab
+      // Load daily tracking tab
       // Load daily tracking tab
       function loadDailyTracking() {
         const dailyList = document.getElementById("dailyTrackingList");
@@ -426,14 +511,37 @@
             // Initialize tracking data for this date if it doesn't exist
             if (!trackingData[selectedDate]) {
               trackingData[selectedDate] = {};
-              medications.forEach((med) => {
-                trackingData[selectedDate][med.id] = Array(
-                  med.frequency_per_day
-                ).fill(false);
-              });
             }
 
             medications.forEach((med) => {
+              // Initialize tracking data for this medication if it doesn't exist
+              if (!trackingData[selectedDate][med.id]) {
+                trackingData[selectedDate][med.id] = Array(
+                  med.frequency_per_day
+                ).fill(false);
+              }
+
+              // Make sure the array has the correct length
+              if (
+                trackingData[selectedDate][med.id].length !==
+                med.frequency_per_day
+              ) {
+                // If medication frequency has changed, resize the array
+                const oldData = trackingData[selectedDate][med.id];
+                trackingData[selectedDate][med.id] = Array(
+                  med.frequency_per_day
+                ).fill(false);
+
+                // Preserve existing data as much as possible
+                for (
+                  let i = 0;
+                  i < Math.min(oldData.length, med.frequency_per_day);
+                  i++
+                ) {
+                  trackingData[selectedDate][med.id][i] = oldData[i];
+                }
+              }
+
               const template = document.getElementById("dailyTrackingTemplate");
               const clone = template.content.cloneNode(true);
 
@@ -495,21 +603,17 @@
           .then((data) => {
             if (data && data.tracking) {
               trackingData[date] = data.tracking;
+            } else {
+              // Initialize empty tracking data if none exists
+              trackingData[date] = {};
             }
           })
           .catch((error) => {
             // Just log the error and continue with empty tracking data
             console.error("Error fetching tracking data:", error);
             trackingData[date] = {};
-            medications.forEach((med) => {
-              trackingData[date][med.id] = Array(med.frequency_per_day).fill(
-                false
-              );
-            });
           });
-      }
-
-      // Helper function to get dose label
+      } // Helper function to get dose label
       function getDoseLabel(index) {
         const labels = ["Morning", "Noon", "Evening", "Night"];
         return index < labels.length ? labels[index] : `Dose ${index + 1}`;
@@ -529,6 +633,7 @@
           tablets_per_dose: parseFloat(
             document.getElementById("tablets").value
           ),
+          remaining_tablets: 30, // Always start with 30 tablets
         };
 
         // Send the new medication to the server
@@ -536,7 +641,7 @@
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": getCsrfToken(), // Function to get CSRF token (defined below)
+            "X-CSRFToken": getCsrfToken(),
           },
           body: JSON.stringify(newMed),
         })
@@ -558,57 +663,101 @@
             alert(`Error adding medication: ${error.message}`);
           });
       }
-
-      // Toggle edit mode for a medication
-      function toggleEditMode(card) {
-        const detailsDiv = card.querySelector(".medication-details");
-        const formDiv = card.querySelector(".medication-form");
-
-        detailsDiv.classList.toggle("d-none");
-        formDiv.classList.toggle("d-none");
-      }
-
       // Save changes to a medication
-      function saveMedicationChanges(card) {
-        const medId = parseInt(card.dataset.id);
+      function loadMedications() {
+        const medicationsList = document.getElementById("medicationsList");
+        medicationsList.innerHTML = "";
 
-        const updatedMed = {
-          id: medId,
-          name: card.querySelector(".edit-name").value,
-          description: card.querySelector(".edit-description").value,
-          refill_date: card.querySelector(".edit-refill").value,
-          frequency_per_day: parseInt(
-            card.querySelector(".edit-frequency").value
-          ),
-          tablets_per_dose: parseFloat(
-            card.querySelector(".edit-tablets").value
-          ),
-        };
+        if (medications.length === 0) {
+          medicationsList.innerHTML = "<p>No medications added yet.</p>";
+          return;
+        }
 
-        // Send the updated medication to the server
-        fetch(`/api/medications/${medId}/`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCsrfToken(),
-          },
-          body: JSON.stringify(updatedMed),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
+        medications.forEach((med) => {
+          const template = document.getElementById("medicationItemTemplate");
+          const clone = template.content.cloneNode(true);
+
+          clone.querySelector(".medication-name").textContent = med.name;
+          clone.querySelector(".description").textContent =
+            med.description || "No description";
+          clone.querySelector(".refill-date").textContent =
+            med.refill_date || "Not set";
+          clone.querySelector(".frequency").textContent = med.frequency_per_day;
+          clone.querySelector(".tablets").textContent = med.tablets_per_dose;
+
+          // Add remaining tablets display
+          if (clone.querySelector(".remaining-count")) {
+            clone.querySelector(
+              ".remaining-count"
+            ).textContent = `${med.remaining_tablets} of 30 tablets`;
+          }
+
+          // Update progress bar width based on remaining percentage
+          if (clone.querySelector(".remaining-bar")) {
+            const percentage = (med.remaining_tablets / 30) * 100;
+            clone.querySelector(
+              ".remaining-bar"
+            ).style.width = `${percentage}%`;
+
+            // Change color based on percentage (red < 20%, yellow < 50%, blue otherwise)
+            let barColor = "bg-primary"; // Default blue
+            if (percentage < 20) {
+              barColor = "bg-danger"; // Red for low
+            } else if (percentage < 50) {
+              barColor = "bg-warning"; // Yellow for medium
             }
-            return response.json();
-          })
-          .then((data) => {
-            // After successful update, refresh the medications
-            fetchMedications();
-            toggleEditMode(card);
-          })
-          .catch((error) => {
-            console.error("Error updating medication:", error);
-            alert(`Error updating medication: ${error.message}`);
-          });
+
+            clone.querySelector(".remaining-bar").className = clone
+              .querySelector(".remaining-bar")
+              .className.replace(/bg-\w+/, barColor);
+          }
+
+          // Set form fields for editing
+          clone.querySelector(".edit-name").value = med.name;
+          clone.querySelector(".edit-refill").value = med.refill_date || "";
+          clone.querySelector(".edit-frequency").value = med.frequency_per_day;
+          clone.querySelector(".edit-tablets").value = med.tablets_per_dose;
+          clone.querySelector(".edit-description").value =
+            med.description || "";
+
+          // Set remaining tablets field
+          if (clone.querySelector(".edit-remaining-tablets")) {
+            clone.querySelector(".edit-remaining-tablets").value =
+              med.remaining_tablets;
+          }
+
+          // Set data attribute for medication ID
+          const card = clone.querySelector(".medication-card");
+          card.dataset.id = med.id;
+
+          // Add event listeners for edit/delete
+          card
+            .querySelector(".edit-med")
+            .addEventListener("click", function () {
+              toggleEditMode(card);
+            });
+
+          card
+            .querySelector(".delete-med")
+            .addEventListener("click", function () {
+              deleteMedication(med.id);
+            });
+
+          card
+            .querySelector(".cancel-edit")
+            .addEventListener("click", function () {
+              toggleEditMode(card);
+            });
+
+          card
+            .querySelector(".edit-medication-form")
+            .addEventListener("submit", function (e) {
+              e.preventDefault();
+              saveMedicationChanges(card);
+            });
+
+          medicationsList.appendChild(clone);
+        });
       }
 
       // Delete a medication
@@ -656,6 +805,8 @@
           })
           .then((data) => {
             alert("Tracking data saved successfully!");
+            // Refresh medications to update the tablet count display
+            fetchMedications();
           })
           .catch((error) => {
             console.error("Error saving tracking data:", error);
