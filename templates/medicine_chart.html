@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medication Manager</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .tab-content {
+        margin-top: 20px;
+      }
+      .medication-card {
+        margin-bottom: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .medication-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .checkbox-container {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .check-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        min-width: 80px;
+      }
+      .check-item input {
+        width: 20px;
+        height: 20px;
+      }
+      .check-item label {
+        margin-top: 5px;
+        font-size: 12px;
+      }
+      .add-medication-form {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-4">
+      <h1 class="mb-4">Medication Manager</h1>
+
+      <!-- Tabs -->
+      <ul class="nav nav-tabs" id="medicationTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="manage-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#manage"
+            type="button"
+            role="tab"
+            aria-controls="manage"
+            aria-selected="true"
+          >
+            Manage Medications
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="daily-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#daily"
+            type="button"
+            role="tab"
+            aria-controls="daily"
+            aria-selected="false"
+          >
+            Daily Tracking
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="medicationTabsContent">
+        <!-- Manage Medications Tab -->
+        <div
+          class="tab-pane fade show active"
+          id="manage"
+          role="tabpanel"
+          aria-labelledby="manage-tab"
+        >
+          <div class="add-medication-form">
+            <h3>Add New Medication</h3>
+            <form id="addMedicationForm">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="medName" class="form-label"
+                    >Medication Name</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="medName"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="refillDate" class="form-label">Refill Date</label>
+                  <input type="date" class="form-control" id="refillDate" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="frequency" class="form-label"
+                    >Frequency Per Day</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="frequency"
+                    min="1"
+                    value="1"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="tablets" class="form-label"
+                    >Tablets Per Dose</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="tablets"
+                    min="1"
+                    value="1"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="description" class="form-label"
+                  >Description/Notes</label
+                >
+                <textarea
+                  class="form-control"
+                  id="description"
+                  rows="3"
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Add Medication
+              </button>
+            </form>
+          </div>
+
+          <h3>Your Medications</h3>
+          <div id="medicationsList">
+            <!-- Medications will be displayed here -->
+          </div>
+        </div>
+
+        <!-- Daily Tracking Tab -->
+        <div
+          class="tab-pane fade"
+          id="daily"
+          role="tabpanel"
+          aria-labelledby="daily-tab"
+        >
+          <h3>Today's Medications</h3>
+          <div class="row">
+            <div class="col-md-8">
+              <div class="input-group mb-3">
+                <span class="input-group-text">Date</span>
+                <input type="date" class="form-control" id="trackingDate" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-success w-100" id="saveTracking">
+                Save Tracking
+              </button>
+            </div>
+          </div>
+          <div id="dailyTrackingList">
+            <!-- Daily tracking will be displayed here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Medication Item Template (Hidden) -->
+    <template id="medicationItemTemplate">
+      <div class="card medication-card mb-3">
+        <div class="card-body">
+          <div class="medication-header">
+            <h5 class="medication-name card-title"></h5>
+            <div>
+              <button class="btn btn-sm btn-outline-primary edit-med">
+                Edit
+              </button>
+              <button class="btn btn-sm btn-outline-danger delete-med">
+                Delete
+              </button>
+            </div>
+          </div>
+          <div class="medication-details">
+            <p class="card-text description"></p>
+            <div class="row">
+              <div class="col-md-4">
+                <strong>Refill Date:</strong> <span class="refill-date"></span>
+              </div>
+              <div class="col-md-4">
+                <strong>Frequency:</strong>
+                <span class="frequency"></span> times/day
+              </div>
+              <div class="col-md-4">
+                <strong>Tablets:</strong> <span class="tablets"></span> per dose
+              </div>
+            </div>
+          </div>
+          <div class="medication-form d-none">
+            <form class="edit-medication-form">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Medication Name</label>
+                  <input type="text" class="form-control edit-name" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Refill Date</label>
+                  <input type="date" class="form-control edit-refill" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Frequency Per Day</label>
+                  <input
+                    type="number"
+                    class="form-control edit-frequency"
+                    min="1"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Tablets Per Dose</label>
+                  <input
+                    type="number"
+                    class="form-control edit-tablets"
+                    min="1"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Description/Notes</label>
+                <textarea
+                  class="form-control edit-description"
+                  rows="2"
+                ></textarea>
+              </div>
+              <div>
+                <button type="submit" class="btn btn-primary save-changes">
+                  Save
+                </button>
+                <button type="button" class="btn btn-secondary cancel-edit">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Daily Tracking Template (Hidden) -->
+    <template id="dailyTrackingTemplate">
+      <div class="card medication-card mb-3">
+        <div class="card-body">
+          <h5 class="card-title tracking-name"></h5>
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <span class="badge bg-info">
+                <span class="tracking-tablets"></span> tablets per dose
+              </span>
+            </div>
+          </div>
+          <div class="checkbox-container">
+            <!-- Checkboxes will be added dynamically -->
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Sample medication data (in a real app, this would come from the database)
+      let medications = [
+        {
+          id: 1,
+          name: "Aspirin",
+          description: "Take with food to prevent stomach upset",
+          refill_date: "2025-03-20",
+          frequency_per_day: 2,
+          tablets_per_dose: 1,
+        },
+        {
+          id: 2,
+          name: "Vitamin D",
+          description: "Take in the morning",
+          refill_date: "2025-04-15",
+          frequency_per_day: 1,
+          tablets_per_dose: 2,
+        },
+        {
+          id: 3,
+          name: "Ibuprofen",
+          description: "For headaches and pain",
+          refill_date: "2025-03-25",
+          frequency_per_day: 3,
+          tablets_per_dose: 1,
+        },
+      ];
+
+      // Tracking data
+      let trackingData = {};
+
+      // Set today's date as default
+      document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("trackingDate").value = today;
+        loadMedications();
+        loadDailyTracking();
+
+        // Add event listeners
+        document
+          .getElementById("addMedicationForm")
+          .addEventListener("submit", addMedication);
+        document
+          .getElementById("trackingDate")
+          .addEventListener("change", loadDailyTracking);
+        document
+          .getElementById("saveTracking")
+          .addEventListener("click", saveTracking);
+      });
+
+      // Load medications into the manage tab
+      function loadMedications() {
+        const medicationsList = document.getElementById("medicationsList");
+        medicationsList.innerHTML = "";
+
+        if (medications.length === 0) {
+          medicationsList.innerHTML = "<p>No medications added yet.</p>";
+          return;
+        }
+
+        medications.forEach((med) => {
+          const template = document.getElementById("medicationItemTemplate");
+          const clone = template.content.cloneNode(true);
+
+          clone.querySelector(".medication-name").textContent = med.name;
+          clone.querySelector(".description").textContent =
+            med.description || "No description";
+          clone.querySelector(".refill-date").textContent =
+            med.refill_date || "Not set";
+          clone.querySelector(".frequency").textContent = med.frequency_per_day;
+          clone.querySelector(".tablets").textContent = med.tablets_per_dose;
+
+          // Set form fields for editing
+          clone.querySelector(".edit-name").value = med.name;
+          clone.querySelector(".edit-refill").value = med.refill_date || "";
+          clone.querySelector(".edit-frequency").value = med.frequency_per_day;
+          clone.querySelector(".edit-tablets").value = med.tablets_per_dose;
+          clone.querySelector(".edit-description").value =
+            med.description || "";
+
+          // Set data attribute for medication ID
+          const card = clone.querySelector(".medication-card");
+          card.dataset.id = med.id;
+
+          // Add event listeners for edit/delete
+          card
+            .querySelector(".edit-med")
+            .addEventListener("click", function () {
+              toggleEditMode(card);
+            });
+
+          card
+            .querySelector(".delete-med")
+            .addEventListener("click", function () {
+              deleteMedication(med.id);
+            });
+
+          card
+            .querySelector(".cancel-edit")
+            .addEventListener("click", function () {
+              toggleEditMode(card);
+            });
+
+          card
+            .querySelector(".edit-medication-form")
+            .addEventListener("submit", function (e) {
+              e.preventDefault();
+              saveMedicationChanges(card);
+            });
+
+          medicationsList.appendChild(clone);
+        });
+      }
+
+      // Load daily tracking tab
+      function loadDailyTracking() {
+        const dailyList = document.getElementById("dailyTrackingList");
+        dailyList.innerHTML = "";
+
+        if (medications.length === 0) {
+          dailyList.innerHTML = "<p>No medications to track.</p>";
+          return;
+        }
+
+        const selectedDate = document.getElementById("trackingDate").value;
+
+        // Initialize tracking data for this date if it doesn't exist
+        if (!trackingData[selectedDate]) {
+          trackingData[selectedDate] = {};
+          medications.forEach((med) => {
+            trackingData[selectedDate][med.id] = Array(
+              med.frequency_per_day
+            ).fill(false);
+          });
+        }
+
+        medications.forEach((med) => {
+          const template = document.getElementById("dailyTrackingTemplate");
+          const clone = template.content.cloneNode(true);
+
+          clone.querySelector(".tracking-name").textContent = med.name;
+          clone.querySelector(".tracking-tablets").textContent =
+            med.tablets_per_dose;
+
+          const card = clone.querySelector(".medication-card");
+          card.dataset.id = med.id;
+
+          const checkboxContainer = clone.querySelector(".checkbox-container");
+
+          // Create checkboxes based on frequency
+          for (let i = 0; i < med.frequency_per_day; i++) {
+            const checkItem = document.createElement("div");
+            checkItem.className = "check-item";
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `med-${med.id}-dose-${i}`;
+            checkbox.checked = trackingData[selectedDate][med.id][i];
+            checkbox.addEventListener("change", function () {
+              trackingData[selectedDate][med.id][i] = this.checked;
+            });
+
+            const label = document.createElement("label");
+            label.htmlFor = `med-${med.id}-dose-${i}`;
+            label.textContent = getDoseLabel(i);
+
+            checkItem.appendChild(checkbox);
+            checkItem.appendChild(label);
+            checkboxContainer.appendChild(checkItem);
+          }
+
+          dailyList.appendChild(clone);
+        });
+      }
+
+      // Helper function to get dose label
+      function getDoseLabel(index) {
+        const labels = ["Morning", "Noon", "Evening", "Night"];
+        return index < labels.length ? labels[index] : `Dose ${index + 1}`;
+      }
+
+      // Add a new medication
+      function addMedication(e) {
+        e.preventDefault();
+
+        const newMed = {
+          id: Date.now(), // Generate a unique ID
+          name: document.getElementById("medName").value,
+          description: document.getElementById("description").value,
+          refill_date: document.getElementById("refillDate").value,
+          frequency_per_day: parseInt(
+            document.getElementById("frequency").value
+          ),
+          tablets_per_dose: parseInt(document.getElementById("tablets").value),
+        };
+
+        medications.push(newMed);
+        loadMedications();
+
+        // Reset form
+        document.getElementById("addMedicationForm").reset();
+
+        // Update tracking for all dates
+        Object.keys(trackingData).forEach((date) => {
+          trackingData[date][newMed.id] = Array(newMed.frequency_per_day).fill(
+            false
+          );
+        });
+
+        // If we're on the tracking tab, refresh it
+        if (
+          document.getElementById("daily-tab").getAttribute("aria-selected") ===
+          "true"
+        ) {
+          loadDailyTracking();
+        }
+      }
+
+      // Toggle edit mode for a medication
+      function toggleEditMode(card) {
+        const detailsDiv = card.querySelector(".medication-details");
+        const formDiv = card.querySelector(".medication-form");
+
+        detailsDiv.classList.toggle("d-none");
+        formDiv.classList.toggle("d-none");
+      }
+
+      // Save changes to a medication
+      function saveMedicationChanges(card) {
+        const medId = parseInt(card.dataset.id);
+        const medIndex = medications.findIndex((med) => med.id === medId);
+
+        if (medIndex !== -1) {
+          const oldFrequency = medications[medIndex].frequency_per_day;
+
+          medications[medIndex] = {
+            id: medId,
+            name: card.querySelector(".edit-name").value,
+            description: card.querySelector(".edit-description").value,
+            refill_date: card.querySelector(".edit-refill").value,
+            frequency_per_day: parseInt(
+              card.querySelector(".edit-frequency").value
+            ),
+            tablets_per_dose: parseInt(
+              card.querySelector(".edit-tablets").value
+            ),
+          };
+
+          // Update the UI
+          card.querySelector(".medication-name").textContent =
+            medications[medIndex].name;
+          card.querySelector(".description").textContent =
+            medications[medIndex].description || "No description";
+          card.querySelector(".refill-date").textContent =
+            medications[medIndex].refill_date || "Not set";
+          card.querySelector(".frequency").textContent =
+            medications[medIndex].frequency_per_day;
+          card.querySelector(".tablets").textContent =
+            medications[medIndex].tablets_per_dose;
+
+          // If frequency changed, update tracking data
+          if (oldFrequency !== medications[medIndex].frequency_per_day) {
+            Object.keys(trackingData).forEach((date) => {
+              const newArray = Array(
+                medications[medIndex].frequency_per_day
+              ).fill(false);
+              // Copy over existing values where possible
+              for (
+                let i = 0;
+                i <
+                Math.min(oldFrequency, medications[medIndex].frequency_per_day);
+                i++
+              ) {
+                if (
+                  trackingData[date][medId] &&
+                  trackingData[date][medId][i] !== undefined
+                ) {
+                  newArray[i] = trackingData[date][medId][i];
+                }
+              }
+              trackingData[date][medId] = newArray;
+            });
+          }
+
+          toggleEditMode(card);
+
+          // If we're on the tracking tab, refresh it
+          if (
+            document
+              .getElementById("daily-tab")
+              .getAttribute("aria-selected") === "true"
+          ) {
+            loadDailyTracking();
+          }
+        }
+      }
+
+      // Delete a medication
+      function deleteMedication(medId) {
+        if (confirm("Are you sure you want to delete this medication?")) {
+          medications = medications.filter((med) => med.id !== medId);
+          loadMedications();
+
+          // Remove from tracking data
+          Object.keys(trackingData).forEach((date) => {
+            delete trackingData[date][medId];
+          });
+
+          // If we're on the tracking tab, refresh it
+          if (
+            document
+              .getElementById("daily-tab")
+              .getAttribute("aria-selected") === "true"
+          ) {
+            loadDailyTracking();
+          }
+        }
+      }
+
+      // Save tracking data
+      function saveTracking() {
+        alert("Tracking data saved successfully!");
+        // In a real application, this would save to a database
+        console.log("Saved tracking data:", trackingData);
+      }
+    </script>
+  </body>
+</html>
