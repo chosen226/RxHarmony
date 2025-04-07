@@ -1,221 +1,247 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block title %}Sign Up -
+RxHarmony{% endblock %} {% block content %}
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        background-color: #f5f7fa;
-    }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    background-color: #f8f9fa;
+  }
 
-    .container {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
+  .container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
 
-    .register-card {
-        background: white;
-        padding: 40px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 400px;
-    }
+  .register-card {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
 
-    .register-title {
-        color: #1a1a1a;
-        font-size: 28px;
-        font-weight: 600;
-        margin: 0 0 8px 0;
-    }
+  .register-title {
+    color: #000000;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    text-align: center;
+  }
 
-    .register-subtitle {
-        color: #666;
-        font-size: 16px;
-        margin: 0 0 32px 0;
-    }
+  .register-subtitle {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 24px 0;
+    text-align: center;
+  }
 
-    .form-group {
-        margin-bottom: 24px;
-    }
+  .form-group {
+    margin-bottom: 20px;
+  }
 
-    .form-label {
-        display: block;
-        color: #333;
-        font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 8px;
-    }
+  .form-label {
+    display: block;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
 
-    .form-input {
-        width: 100%;
-        padding: 12px 16px;
-        font-size: 16px;
-        border: 1.5px solid #e0e0e0;
-        border-radius: 8px;
-        box-sizing: border-box;
-        transition: border-color 0.2s ease;
-    }
+  .form-label:after {
+    content: "*";
+    color: #000000;
+    margin-left: 2px;
+  }
 
-    .form-input:focus {
-        outline: none;
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
+  .form-input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+    background-color: #f5f7fa;
+  }
 
-    .submit-button {
-        width: 100%;
-        padding: 14px;
-        background-color: #2563eb;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.2s ease, transform 0.1s ease;
-    }
+  .form-input:focus {
+    outline: none;
+    border-color: #000000;
+    box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.1);
+  }
 
-    .submit-button:hover {
-        background-color: #1d4ed8;
-    }
+  .submit-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 10px;
+  }
 
-    .submit-button:active {
-        transform: translateY(1px);
-    }
+  .submit-button:hover {
+    background-color: #000000;
+  }
 
-    .error-message {
-        background-color: #fee2e2;
-        border-left: 4px solid #dc2626;
-        color: #dc2626;
-        padding: 12px;
-        margin-top: 16px;
-        border-radius: 4px;
-        font-size: 14px;
-        display: none;
-    }
+  .error-message {
+    background-color: #fee2e2;
+    border: 1px solid #dc2626;
+    color: #dc2626;
+    padding: 10px;
+    margin-top: 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    display: none;
+  }
 
-    .error-message.visible {
-        display: block;
-    }
+  .error-message.visible {
+    display: block;
+  }
+
+  .auth-links {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .auth-links a {
+    color: #000000;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .auth-links a:hover {
+    text-decoration: underline;
+  }
 </style>
 
 <div class="container">
-    <div class="register-card">
-        <h1 class="register-title">Create Account</h1>
-        <p class="register-subtitle">Join us to get started</p>
-        
-        <form id="registerForm">
-            <div class="form-group">
-                <label class="form-label" for="email">Email address</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    class="form-input" 
-                    placeholder="Enter your email"
-                    required
-                >
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label" for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    class="form-input" 
-                    placeholder="Create a password"
-                    required
-                >
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label" for="confirm_password">Confirm Password</label>
-                <input 
-                    type="password" 
-                    id="confirm_password" 
-                    name="confirm_password" 
-                    class="form-input" 
-                    placeholder="Confirm your password"
-                    required
-                >
-            </div>
-            
-            <button type="submit" class="submit-button">Create Account</button>
-        </form>
-        
-        <div id="error-message" class="error-message"></div>
+  <div class="register-card">
+    <h1 class="register-title">Sign up to RxHarmony</h1>
+    <p class="register-subtitle">Create an account to get started</p>
+
+    <form id="registerForm">
+      <div class="form-group">
+        <label class="form-label" for="email">Email address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-input"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="form-input"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="confirm_password"
+          >Confirm Password</label
+        >
+        <input
+          type="password"
+          id="confirm_password"
+          name="confirm_password"
+          class="form-input"
+          required
+        />
+      </div>
+
+      <button type="submit" class="submit-button">Sign Up</button>
+    </form>
+
+    <div id="error-message" class="error-message"></div>
+
+    <div class="auth-links">
+      Already have an account? <a href="/login/">Sign in</a>
     </div>
+  </div>
 </div>
 
 <script>
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
-        return cookieValue;
+      }
     }
+    return cookieValue;
+  }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('registerForm');
-        const errorDiv = document.getElementById('error-message');
-        const submitButton = form.querySelector('.submit-button');
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("registerForm");
+    const errorDiv = document.getElementById("error-message");
+    const submitButton = form.querySelector(".submit-button");
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            errorDiv.classList.remove('visible');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Creating Account...';
-            
-            const formData = {
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value,
-                confirm_password: document.getElementById('confirm_password').value
-            };
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-            try {
-                const response = await fetch('/register/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    body: JSON.stringify(formData)
-                });
+      errorDiv.classList.remove("visible");
+      submitButton.disabled = true;
+      submitButton.textContent = "Creating Account...";
 
-                const data = await response.json();
+      const formData = {
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+        confirm_password: document.getElementById("confirm_password").value,
+      };
 
-                if (!response.ok) {
-                    errorDiv.textContent = data.error;
-                    errorDiv.classList.add('visible');
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Create Account';
-                    return;
-                }
-
-                window.location.href = data.redirect_url;
-            } catch (error) {
-                errorDiv.textContent = 'An error occurred. Please try again.';
-                errorDiv.classList.add('visible');
-                submitButton.disabled = false;
-                submitButton.textContent = 'Create Account';
-            }
+      try {
+        const response = await fetch("/register/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: JSON.stringify(formData),
         });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          errorDiv.textContent = data.error;
+          errorDiv.classList.add("visible");
+          submitButton.disabled = false;
+          submitButton.textContent = "Sign Up";
+          return;
+        }
+
+        window.location.href = data.redirect_url;
+      } catch (error) {
+        errorDiv.textContent = "An error occurred. Please try again.";
+        errorDiv.classList.add("visible");
+        submitButton.disabled = false;
+        submitButton.textContent = "Sign Up";
+      }
     });
+  });
 </script>
 {% endblock %}

@@ -7,56 +7,7 @@ RxHarmony{% endblock %} {% block content %}
     min-height: 100vh;
     padding: 20px 0;
   }
-  /* Add these styles to your existing CSS */
 
-  /* Make the daily tracking list container scrollable */
-  #dailyTrackingList {
-    max-height: 100px; /* Set height to show approximately 2 cards */
-    overflow-y: auto; /* Enable vertical scrolling */
-    padding: 5px;
-    scroll-snap-type: y proximity; /* Enable snap scrolling but less strict than medication cards */
-  }
-
-  /* Style for each daily tracking card */
-  #dailyTrackingList .medication-card {
-    scroll-snap-align: start; /* Makes cards snap into view when scrolling */
-    margin-bottom: 15px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-  }
-
-  /* Style the scrollbar for better visibility */
-  #dailyTrackingList::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  #dailyTrackingList::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 4px;
-  }
-
-  #dailyTrackingList::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
-    border-radius: 4px;
-  }
-
-  /* Add a subtle shadow at the bottom of the container to indicate more content */
-  #dailyTrackingList::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 20px;
-    background: linear-gradient(to top, rgba(255, 255, 255, 0.8), transparent);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  #dailyTrackingList:not(.at-bottom)::after {
-    opacity: 1;
-  }
   .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -157,47 +108,24 @@ RxHarmony{% endblock %} {% block content %}
 
   .btn-primary {
     color: #fff;
-    background-color: #000000;
-    border-color: #000000;
+    background-color: #0066ff;
+    border-color: #0066ff;
   }
 
   .btn-primary:hover {
-    background-color: #000000;
-    border-color: #000000;
+    background-color: #0055dd;
+    border-color: #0055dd;
   }
 
   /* Medication cards */
-  /* Add these styles to your existing CSS */
-
-  /* Make the medication list container scrollable */
   .medication-cards {
-    max-height: 270px; /* Fixed height for scrollable area */
-    overflow-y: auto; /* Enable vertical scrolling */
-    padding: 5px;
-    scroll-snap-type: y mandatory; /* Enable snap scrolling */
+    margin-top: 20px;
   }
 
-  /* Style for each medication card */
   .medication-card {
-    scroll-snap-align: start; /* Makes each card snap into view */
     margin-bottom: 15px;
     border: 1px solid #eee;
     border-radius: 8px;
-  }
-
-  /* Style the scrollbar for better visibility */
-  .medication-cards::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .medication-cards::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 4px;
-  }
-
-  .medication-cards::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
-    border-radius: 4px;
   }
 
   .medication-header {
@@ -230,7 +158,7 @@ RxHarmony{% endblock %} {% block content %}
   }
 
   .bg-primary {
-    background-color: #000000;
+    background-color: #0066ff;
   }
 
   .bg-warning {
@@ -268,7 +196,7 @@ RxHarmony{% endblock %} {% block content %}
     background: none;
     border: none;
     cursor: pointer;
-    color: black;
+    color: #0066ff;
     font-size: 18px;
   }
 
@@ -296,7 +224,7 @@ RxHarmony{% endblock %} {% block content %}
   }
 
   .calendar-table td.today {
-    background-color: black;
+    background-color: #0066ff;
     color: white;
   }
 
@@ -313,7 +241,7 @@ RxHarmony{% endblock %} {% block content %}
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background-color: black;
+    background-color: #0066ff;
   }
 
   /* Allergy dropdown */
@@ -334,7 +262,7 @@ RxHarmony{% endblock %} {% block content %}
   }
 
   .dropdown-toggle.active {
-    border-color: black;
+    border-color: #0066ff;
   }
 
   .dropdown-menu {
@@ -350,69 +278,7 @@ RxHarmony{% endblock %} {% block content %}
   .dropdown-menu.show {
     display: block;
   }
-  /* Refills carousel styles */
-  .refills-carousel {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-    margin: 10px 0;
-  }
 
-  .refills-container {
-    width: 100%;
-    overflow: hidden;
-    padding: 0 10px;
-  }
-
-  .refills-slider {
-    display: flex;
-    transition: transform 0.3s ease;
-  }
-
-  .refill-item {
-    min-width: 100%; /* Each item takes full width of container */
-    padding: 10px;
-    box-sizing: border-box;
-    text-align: center;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    margin: 0 5px;
-    background-color: #f5f7fa;
-  }
-
-  .refill-nav-btn {
-    background: none;
-    border: none;
-    color: black;
-    cursor: pointer;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-  }
-
-  .refill-nav-btn:disabled {
-    color: #ccc;
-    cursor: not-allowed;
-  }
-
-  .refill-prev {
-    left: 0;
-  }
-
-  .refill-next {
-    right: 0;
-  }
-
-  .no-refills {
-    width: 100%;
-    text-align: center;
-    color: #999;
-    font-style: italic;
-    padding: 15px 0;
-  }
   /* Medication form styles */
   .medication-form {
     display: none;
@@ -451,7 +317,7 @@ RxHarmony{% endblock %} {% block content %}
 
   .form-control:focus {
     outline: none;
-    border-color: black;
+    border-color: #0066ff;
   }
 
   /* Upcoming refills section */
@@ -512,17 +378,20 @@ RxHarmony{% endblock %} {% block content %}
                   {% endif %}
                 </div>
               </div>
-
+              <div class="info-item">
+                <div class="info-label">Email</div>
+                <div class="info-value">{{ user.email }}</div>
+              </div>
               <div class="info-item">
                 <div class="info-label">Primary Physician</div>
                 <div class="info-value">
-                  {% if profile.primary_physician %} {{profile.primary_physician
-                  }} {% else %}
+                  {% if profile.primary_physician %} {{
+                  profile.primary_physician }} {% else %}
                   <span class="empty-state">Not provided</span>
                   {% endif %}
                 </div>
               </div>
-              <!-- <div class="info-item">
+              <div class="info-item">
                 <div class="info-label">Gender</div>
                 <div class="info-value">
                   {% if profile.gender %} {{ profile.get_gender_display }} {%
@@ -530,8 +399,8 @@ RxHarmony{% endblock %} {% block content %}
                   <span class="empty-state">Not provided</span>
                   {% endif %}
                 </div>
-              </div> -->
-              <!-- <div class="info-item">
+              </div>
+              <div class="info-item">
                 <div class="info-label">Blood Type</div>
                 <div class="info-value">
                   {% if profile.blood_type %} {{ profile.blood_type }} {% else
@@ -539,40 +408,6 @@ RxHarmony{% endblock %} {% block content %}
                   <span class="empty-state">Not provided</span>
                   {% endif %}
                 </div>
-              </div> -->
-            </div>
-
-            <!-- Allergies Dropdown -->
-            <div class="dropdown" style="margin-top: 20px">
-              <div class="dropdown-toggle" id="allergiesToggle">
-                <!-- <span>Allergies</span> -->
-              </div>
-            </div>
-
-            <!-- Medical Conditions Dropdown -->
-            <div class="dropdown" style="margin-top: 10px">
-              <div class="dropdown-toggle" id="conditionsToggle">
-                <span>Medical Conditions</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </div>
-              <div class="dropdown-menu" id="conditionsMenu">
-                {% if conditions %} {% for condition in conditions %}
-                <div style="padding: 5px 0">{{ condition.name }}</div>
-                {% endfor %} {% else %}
-                <span class="empty-state">No conditions listed</span>
-                {% endif %}
               </div>
             </div>
           </div>
@@ -704,7 +539,97 @@ RxHarmony{% endblock %} {% block content %}
           </div>
         </div>
 
-        <!-- Medical History Card with Previous Medications -->
+        <!-- Medical History Card with Allergies Dropdown -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Medical Information</h2>
+          </div>
+          <div class="card-body">
+            <!-- Allergies Dropdown -->
+            <div class="dropdown">
+              <div class="dropdown-toggle" id="allergiesToggle">
+                <span>Allergies</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div class="dropdown-menu" id="allergiesMenu">
+                {% if profile.allergies %} {{ profile.allergies|linebreaks }} {%
+                else %}
+                <span class="empty-state">No allergies listed</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Previous Medications Section -->
+            <h3
+              style="
+                font-size: 16px;
+                font-weight: 500;
+                color: #666;
+                margin-top: 20px;
+              "
+            >
+              Previous Medications
+            </h3>
+            <div
+              style="
+                background-color: #f5f7fa;
+                padding: 15px;
+                border-radius: 4px;
+              "
+            >
+              {% if medications %}
+              <ul style="list-style-type: none; padding: 0; margin: 0">
+                {% for medication in medications %}
+                <li style="padding: 5px 0">{{ medication.name }}</li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <span class="empty-state">No previous medications listed</span>
+              {% endif %}
+            </div>
+
+            <!-- Medical Conditions Section -->
+            <h3
+              style="
+                font-size: 16px;
+                font-weight: 500;
+                color: #666;
+                margin-top: 20px;
+              "
+            >
+              Medical Conditions
+            </h3>
+            <div
+              style="
+                background-color: #f5f7fa;
+                padding: 15px;
+                border-radius: 4px;
+              "
+            >
+              {% if conditions %}
+              <ul style="list-style-type: none; padding: 0; margin: 0">
+                {% for condition in conditions %}
+                <li style="padding: 5px 0">{{ condition.name }}</li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <span class="empty-state">No conditions listed</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Right Column - Calendar and Refills -->
@@ -771,43 +696,9 @@ RxHarmony{% endblock %} {% block content %}
               <h3 style="font-size: 16px; color: #333; margin-bottom: 10px">
                 Upcoming Refills
               </h3>
-              <div class="refills-carousel">
-                <button id="prevRefill" class="refill-nav-btn refill-prev">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                  </svg>
-                </button>
-                <div id="refillsContainer" class="refills-container">
-                  <div id="upcomingRefills" class="refills-slider">
-                    <!-- Refills will be inserted here -->
-                  </div>
-                </div>
-                <button id="nextRefill" class="refill-nav-btn refill-next">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </button>
-              </div>
+              <ul class="refills-list" id="upcomingRefills">
+                <!-- Upcoming refills will be inserted here -->
+              </ul>
             </div>
           </div>
         </div>
@@ -848,39 +739,47 @@ RxHarmony{% endblock %} {% block content %}
       <div class="medication-header">
         <h5 class="medication-name"></h5>
         <div>
-          <button class="btn btn-success btn-sm refill-med">Refill</button>
           <button class="btn btn-primary btn-sm edit-med">Edit</button>
           <button class="btn btn-danger btn-sm delete-med">Delete</button>
         </div>
       </div>
       <div class="medication-details">
         <p class="description"></p>
-        <div style="margin-bottom: 8px">
-          <strong>Refill:</strong> <span class="refill-date"></span>
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+          "
+        >
+          <span
+            ><strong>Refill:</strong> <span class="refill-date"></span
+          ></span>
+          <span
+            ><strong>Frequency:</strong>
+            <span class="frequency"></span> times/day</span
+          >
         </div>
         <div
           style="
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
           "
         >
-          <div>
-            <strong>Frequency:</strong>
-            <span class="frequency"></span> times/day
-          </div>
-          <div>
-            <strong>Tablets:</strong> <span class="tablets"></span> per dose
-          </div>
+          <span
+            ><strong>Tablets:</strong> <span class="tablets"></span> per
+            dose</span
+          >
+          <span
+            ><strong>Remaining:</strong> <span class="remaining-count"></span
+          ></span>
         </div>
-        <div>
-          <strong>Remaining:</strong> <span class="remaining-count"></span>
-        </div>
-        <div class="progress" style="height: 12px; margin-top: 10px">
+        <div class="progress">
           <div class="remaining-bar progress-bar bg-primary"></div>
         </div>
       </div>
-      <div class="medication-form" style="display: none">
+      <div class="medication-form">
         <form class="edit-medication-form">
           <div class="form-row">
             <div class="form-group">
@@ -969,33 +868,13 @@ RxHarmony{% endblock %} {% block content %}
   let medications = []; // This will be populated via AJAX
 
   document.addEventListener("DOMContentLoaded", function () {
-    // Initialize dropdowns
-
-    document
-      .getElementById("prevRefill")
-      .addEventListener("click", function () {
-        navigateRefills(-1);
-      });
-
-    document
-      .getElementById("nextRefill")
-      .addEventListener("click", function () {
-        navigateRefills(1);
-      });
-
+    // Initialize allergies dropdown
     const allergiesToggle = document.getElementById("allergiesToggle");
     const allergiesMenu = document.getElementById("allergiesMenu");
-    const conditionsToggle = document.getElementById("conditionsToggle");
-    const conditionsMenu = document.getElementById("conditionsMenu");
 
     allergiesToggle.addEventListener("click", function () {
       allergiesMenu.classList.toggle("show");
       allergiesToggle.classList.toggle("active");
-    });
-
-    conditionsToggle.addEventListener("click", function () {
-      conditionsMenu.classList.toggle("show");
-      conditionsToggle.classList.toggle("active");
     });
 
     // Initialize add medication form toggle
@@ -1109,21 +988,7 @@ RxHarmony{% endblock %} {% block content %}
 
           // Mark dates with medications (example)
           // You would replace this with actual data from your medications
-          // Mark dates with refills
-          const currentDate = new Date(year, month, date);
-          const isRefillDate = medications.some((med) => {
-            if (med.refill_date) {
-              const refillDate = new Date(med.refill_date);
-              return (
-                refillDate.getFullYear() === year &&
-                refillDate.getMonth() === month &&
-                refillDate.getDate() === date
-              );
-            }
-            return false;
-          });
-
-          if (isRefillDate) {
+          if ((date % 7 === 0 || date % 7 === 3) && medications.length > 0) {
             cell.classList.add("has-med");
           }
 
@@ -1180,110 +1045,51 @@ RxHarmony{% endblock %} {% block content %}
 
     renderCalendar(newYear, monthIndex);
   }
-  // Global variable to track current refill index
-  let currentRefillIndex = 0;
 
   function updateUpcomingRefills(year, month) {
     const refillsList = document.getElementById("upcomingRefills");
     refillsList.innerHTML = "";
 
-    // Get all refills for current and next month
-    // Get refills due in the next 15 days
-    const upcomingRefills = [];
-    const today = new Date();
-    const twoWeeksLater = new Date(today);
-    twoWeeksLater.setDate(today.getDate() + 15);
-
+    // Example refill data - you would replace this with your actual medication data
     if (medications.length > 0) {
       medications.forEach((med) => {
         if (med.refill_date) {
           const refillDate = new Date(med.refill_date);
+          const currentDate = new Date(year, month, 1);
 
-          // Only show refills due in the next 15 days
-          if (refillDate >= today && refillDate <= twoWeeksLater) {
-            upcomingRefills.push({
-              date: refillDate,
-              name: med.name,
-            });
+          // Only show refills for the current month or the next month
+          if (
+            refillDate.getMonth() === currentDate.getMonth() ||
+            refillDate.getMonth() === (currentDate.getMonth() + 1) % 12
+          ) {
+            const item = document.createElement("li");
+            item.className = "refill-item";
+
+            const dateSpan = document.createElement("div");
+            dateSpan.className = "refill-date";
+            dateSpan.textContent = refillDate.toLocaleDateString();
+
+            const medSpan = document.createElement("div");
+            medSpan.className = "refill-med";
+            medSpan.textContent = med.name;
+
+            item.appendChild(dateSpan);
+            item.appendChild(medSpan);
+            refillsList.appendChild(item);
           }
         }
       });
     }
 
-    // Sort refills by date
-    upcomingRefills.sort((a, b) => a.date - b.date);
-
-    // Reset current index if it's out of bounds
-    if (currentRefillIndex >= upcomingRefills.length) {
-      currentRefillIndex = 0;
-    }
-
-    if (upcomingRefills.length === 0) {
-      const emptyItem = document.createElement("div");
-      emptyItem.className = "no-refills";
-      emptyItem.textContent = "No upcoming refills";
+    if (refillsList.children.length === 0) {
+      const emptyItem = document.createElement("li");
+      emptyItem.className = "refill-item";
+      emptyItem.innerHTML =
+        '<span class="empty-state">No upcoming refills</span>';
       refillsList.appendChild(emptyItem);
-
-      // Disable navigation buttons
-      document.getElementById("prevRefill").disabled = true;
-      document.getElementById("nextRefill").disabled = true;
-    } else {
-      // Create all refill items
-      upcomingRefills.forEach((refill) => {
-        const item = document.createElement("div");
-        item.className = "refill-item";
-
-        const dateSpan = document.createElement("div");
-        dateSpan.className = "refill-date";
-        dateSpan.textContent = refill.date.toLocaleDateString();
-
-        const medSpan = document.createElement("div");
-        medSpan.className = "refill-med";
-        medSpan.textContent = refill.name;
-
-        item.appendChild(dateSpan);
-        item.appendChild(medSpan);
-        refillsList.appendChild(item);
-      });
-
-      // Enable/disable buttons based on content
-      document.getElementById("prevRefill").disabled =
-        upcomingRefills.length <= 1;
-      document.getElementById("nextRefill").disabled =
-        upcomingRefills.length <= 1;
-
-      // Set initial position
-      updateRefillsPosition();
     }
   }
 
-  function updateRefillsPosition() {
-    const slider = document.getElementById("upcomingRefills");
-    const items = slider.getElementsByClassName("refill-item");
-
-    if (items.length > 0) {
-      const translateValue = -currentRefillIndex * 100;
-      slider.style.transform = `translateX(${translateValue}%)`;
-    }
-  }
-
-  function navigateRefills(direction) {
-    const slider = document.getElementById("upcomingRefills");
-    const itemCount = slider.getElementsByClassName("refill-item").length;
-
-    if (itemCount <= 1) return;
-
-    currentRefillIndex += direction;
-
-    // Ensure we stay within bounds
-    if (currentRefillIndex < 0) {
-      currentRefillIndex = itemCount - 1;
-    } else if (currentRefillIndex >= itemCount) {
-      currentRefillIndex = 0;
-    }
-
-    updateRefillsPosition();
-  }
   // Toggle edit mode for medication cards
   function toggleEditMode(card) {
     const detailsDiv = card.querySelector(".medication-details");
@@ -1367,48 +1173,26 @@ RxHarmony{% endblock %} {% block content %}
       const template = document.getElementById("medicationItemTemplate");
       const clone = template.content.cloneNode(true);
 
-      // Add snap scrolling for one-card-at-a-time view
-      const card = clone.querySelector(".medication-card");
-      card.style.scrollSnapAlign = "start";
-      card.style.minHeight = "230px";
-      card.style.marginBottom = "20px";
-
       clone.querySelector(".medication-name").textContent = med.name;
-
-      // Format description
-      if (med.description) {
-        clone.querySelector(".description").textContent = med.description;
-      } else {
-        clone.querySelector(".description").textContent = "No description";
-      }
-
-      // Format refill date
-      const refillElement = clone.querySelector(".refill-date");
-      if (med.refill_date) {
-        refillElement.textContent = med.refill_date;
-      } else {
-        refillElement.textContent = "Not set";
-      }
-
-      // Set frequency and tablets
+      clone.querySelector(".description").textContent =
+        med.description || "No description";
+      clone.querySelector(".refill-date").textContent =
+        med.refill_date || "Not set";
       clone.querySelector(".frequency").textContent = med.frequency_per_day;
       clone.querySelector(".tablets").textContent = med.tablets_per_dose;
-
-      // Add remaining tablets display
-      // Calculate the total capacity (nearest multiple of 30 that's >= remaining)
-      const totalCapacity = Math.ceil(med.remaining_tablets / 30) * 30;
 
       // Add remaining tablets display
       if (clone.querySelector(".remaining-count")) {
         clone.querySelector(
           ".remaining-count"
-        ).textContent = `${med.remaining_tablets} of ${totalCapacity} tablets`;
+        ).textContent = `${med.remaining_tablets} of 30 tablets`;
       }
 
       // Update progress bar width based on remaining percentage
       if (clone.querySelector(".remaining-bar")) {
-        const percentage = (med.remaining_tablets / totalCapacity) * 100;
+        const percentage = (med.remaining_tablets / 30) * 100;
         clone.querySelector(".remaining-bar").style.width = `${percentage}%`;
+
         // Change color based on percentage (red < 20%, yellow < 50%, blue otherwise)
         let barColor = "bg-primary"; // Default blue
         if (percentage < 20) {
@@ -1436,12 +1220,10 @@ RxHarmony{% endblock %} {% block content %}
       }
 
       // Set data attribute for medication ID
+      const card = clone.querySelector(".medication-card");
       card.dataset.id = med.id;
 
       // Add event listeners for edit/delete
-      card.querySelector(".refill-med").addEventListener("click", function () {
-        refillMedication(med.id);
-      });
       card.querySelector(".edit-med").addEventListener("click", function () {
         toggleEditMode(card);
       });
@@ -1464,36 +1246,7 @@ RxHarmony{% endblock %} {% block content %}
       medicationsList.appendChild(clone);
     });
   }
-  // Refill a medication
-  function refillMedication(medId) {
-    if (
-      confirm(
-        "Refill this medication? This will set the remaining tablets to 30 and update the refill date."
-      )
-    ) {
-      fetch(`/api/medications/${medId}/refill/`, {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": getCsrfToken(),
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          // After successful refill, refresh the medications
-          fetchMedications();
-          alert("Medication refilled successfully!");
-        })
-        .catch((error) => {
-          console.error("Error refilling medication:", error);
-          alert(`Error refilling medication: ${error.message}`);
-        });
-    }
-  }
+
   // Load daily tracking tab
   function loadDailyTracking() {
     const dailyList = document.getElementById("dailyTrackingList");

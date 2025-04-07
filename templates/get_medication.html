@@ -1,0 +1,1452 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Over the Counter
+  Prescription - RxHarmony{% endblock %}{% block content %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Over the Counter Prescription</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <main>
+        <!-- Health Information Summary Card -->
+        <section class="health-section">
+          <div class="card">
+            <div class="card-header">
+              <h2>Your Health Information Summary</h2>
+            </div>
+            <div class="health-info-container">
+              <div class="health-grid">
+                <div class="health-section">
+                  <h3>Current Medications</h3>
+                  <ul id="medicationsList" class="summary-list">
+                    <li class="empty-state">Loading medications...</li>
+                  </ul>
+                </div>
+                <div class="health-section">
+                  <h3>Allergies</h3>
+                  <div id="allergiesContainer" class="summary-content">
+                    <p class="empty-state">Loading allergies...</p>
+                  </div>
+                </div>
+              </div>
+              <div class="summary-section">
+                <h3>Medical Conditions</h3>
+                <ul id="conditionsList" class="summary-list">
+                  <li class="empty-state">Loading conditions...</li>
+                </ul>
+              </div>
+              <div class="summary-section">
+                <h3>Personal Details</h3>
+                <div id="personalDetails" class="summary-content">
+                  <p>
+                    <strong>Age:</strong>
+                    <span id="ageDisplay">Loading...</span>
+                  </p>
+                  <p>
+                    <strong>Gender:</strong>
+                    <span id="genderDisplay">Loading...</span>
+                  </p>
+                  <p>
+                    <strong>Blood Type:</strong>
+                    <span id="bloodTypeDisplay">Loading...</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Get OTC Prescription Card -->
+        <section class="otc-prescription-section">
+          <div class="card">
+            <div class="card-header">
+              <h2>Over The Counter Drug Recommendation</h2>
+            </div>
+            <div class="ailment-form">
+              <div class="form-group">
+                <label for="currentAilment"
+                  >Describe Your Current Ailment:</label
+                >
+                <textarea
+                  id="currentAilment"
+                  name="currentAilment"
+                  placeholder="Please describe your symptoms, how long you've had them, and any other details that might be relevant..."
+                  rows="5"
+                ></textarea>
+              </div>
+              <button id="getDiagnosisBtn" class="btn btn-primary">
+                Get Recommendation
+              </button>
+            </div>
+
+            <!-- Diagnosis Result Card - Initially Hidden -->
+            <div
+              id="diagnosisResultCard"
+              class="diagnosis-result-card"
+              style="display: none"
+            >
+              <h3>Recommended Treatment</h3>
+              <div id="loadingIndicator" class="loading-indicator">
+                <div class="spinner"></div>
+                <p>Consulting AI for treatment recommendations...</p>
+              </div>
+              <div id="diagnosisContent" class="diagnosis-content"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <div id="messageContainer" class="message-container"></div>
+    </div>
+
+    <style>
+      /* Global styles */
+      :root {
+        --primary-color: black;
+        --primary-dark: black;
+        --secondary-color: #e74c3c;
+        --text-color: #333;
+        --light-gray: #f8f9fa;
+        --medium-gray: #ddd;
+        --dark-gray: #777;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --card-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--light-gray);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      /* Cards and Sections */
+      .card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: var(--card-shadow);
+      }
+
+      section {
+        margin-bottom: 2rem;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .card-header h2 {
+        margin: 0;
+        color: #000;
+        font-size: 1.4rem;
+      }
+
+      /* Health Summary Styles */
+      .health-info-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .health-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+      }
+
+      .health-section h3,
+      .summary-section h3 {
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      .summary-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .summary-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid var(--light-gray);
+      }
+
+      .summary-content {
+        line-height: 1.7;
+      }
+
+      .empty-state {
+        color: var(--dark-gray);
+        font-style: italic;
+      }
+
+      /* Forms */
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--medium-gray);
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 1rem;
+      }
+
+      textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+      }
+
+      /* OTC Prescription Styles */
+      .otc-prescription-section {
+        margin-top: 30px;
+      }
+
+      .ailment-form {
+        margin-bottom: 25px;
+      }
+
+      .diagnosis-result-card {
+        background-color: var(--light-gray);
+        border-radius: 6px;
+        padding: 20px;
+        margin-top: 25px;
+      }
+
+      .diagnosis-result-card h3 {
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        border-bottom: 1px solid var(--medium-gray);
+        padding-bottom: 10px;
+      }
+
+      .diagnosis-content {
+        line-height: 1.8;
+      }
+
+      /* Loading Indicator Styles */
+      .loading-indicator {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border-left-color: var(--primary-color);
+        animation: spin 1s linear infinite;
+        margin-bottom: 15px;
+      }
+
+      /* Safety alerts */
+      .safety-alert {
+        margin: 15px 0;
+        padding: 12px 15px;
+        border-radius: 4px;
+        border-left-width: 4px;
+        border-left-style: solid;
+      }
+
+      .safety-warning {
+        background-color: rgba(243, 156, 18, 0.1);
+        border-left-color: var(--warning-color);
+      }
+
+      .safety-danger {
+        background-color: rgba(231, 76, 60, 0.1);
+        border-left-color: var(--danger-color);
+      }
+
+      .medication-item {
+        margin-bottom: 12px;
+      }
+      
+      .medication-brand {
+        font-weight: 600;
+      }
+      
+      .dosage-info {
+        font-style: italic;
+        color: #444;
+        margin-top: 3px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Messages */
+      .message-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+      }
+
+      .message {
+        padding: 12px 20px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        color: white;
+        background-color: var(--primary-color);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.3s ease-out;
+      }
+
+      .message.success {
+        background-color: var(--success-color);
+      }
+
+      .message.error {
+        background-color: var(--danger-color);
+      }
+
+      .message.info {
+        background-color: var(--primary-color);
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .health-grid {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+      }
+      
+      /* Disclaimer styling */
+      .disclaimer {
+        margin-top: 20px;
+        padding-top: 15px;
+        font-size: 0.85rem;
+        color: var(--dark-gray);
+      }
+      
+      .disclaimer hr {
+        margin-bottom: 10px;
+        border: 0;
+        border-top: 1px solid var(--medium-gray);
+      }
+      
+      .disclaimer p {
+        margin-bottom: 8px;
+      }
+    </style>
+
+    <script>
+      // Global variables
+      let userProfile = {};
+      let userMedications = [];
+      let userConditions = [];
+
+      // Utility functions
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      function showMessage(message, type = "info") {
+        const messageContainer = document.getElementById("messageContainer");
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("message");
+        messageElement.classList.add(type);
+        messageElement.textContent = message;
+
+        messageContainer.appendChild(messageElement);
+
+        // Remove message after 4 seconds
+        setTimeout(() => {
+          messageElement.remove();
+        }, 4000);
+      }
+
+      function calculateAge(dateOfBirth) {
+        if (!dateOfBirth) return "Unknown";
+
+        const dob = new Date(dateOfBirth);
+        const now = new Date();
+        let age = now.getFullYear() - dob.getFullYear();
+        const monthDiff = now.getMonth() - dob.getMonth();
+
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && now.getDate() < dob.getDate())
+        ) {
+          age--;
+        }
+
+        return age;
+      }
+
+      function formatGender(genderCode) {
+        if (!genderCode) return "Not specified";
+
+        switch (genderCode) {
+          case "M":
+            return "Male";
+          case "F":
+            return "Female";
+          case "O":
+            return "Other";
+          case "N":
+            return "Prefer not to say";
+          default:
+            return genderCode;
+        }
+      }
+      
+      // Function to extract medication names from AI recommendation
+      function extractMedicationNames(recommendationText) {
+        // List of common OTC medications to look for - this needs to be kept
+        // for the safety check function, but we'll use a more comprehensive 
+        // database on the server side for actual recommendations
+        const commonOTCMeds = [
+          "acetaminophen", "tylenol", "paracetamol",
+          "ibuprofen", "advil", "motrin", 
+          "aspirin", "bayer", "ecotrin",
+          "naproxen", "aleve", 
+          "diphenhydramine", "benadryl",
+          "loratadine", "claritin",
+          "cetirizine", "zyrtec",
+          "fexofenadine", "allegra", 
+          "pseudoephedrine", "sudafed",
+          "guaifenesin", "mucinex",
+          "dextromethorphan", "robitussin", "delsym",
+          "loperamide", "imodium",
+          "bismuth subsalicylate", "pepto-bismol",
+          "famotidine", "pepcid",
+          "ranitidine", "zantac",
+          "omeprazole", "prilosec",
+          "esomeprazole", "nexium"
+        ];
+        
+        const foundMeds = [];
+        
+        // Look for each medication in the text
+        commonOTCMeds.forEach(med => {
+          const regex = new RegExp('\\b' + med + '\\b', 'i');
+          if (regex.test(recommendationText.toLowerCase())) {
+            // Only add if not already in the list
+            if (!foundMeds.includes(med)) {
+              foundMeds.push(med);
+            }
+          }
+        });
+        
+        return foundMeds;
+      }
+      
+      // Function to check medication safety
+      function checkMedicationSafety(medications) {
+        const safetyIssues = [];
+        
+        // Loop through each medication and check for safety issues
+        medications.forEach(med => {
+          const lowerMed = med.toLowerCase();
+          
+          // Check for medication interactions
+          if (userMedications.length > 0) {
+            // NSAIDs interactions
+            if (["ibuprofen", "aspirin", "naproxen", "advil", "motrin", "aleve", "bayer"].includes(lowerMed)) {
+              // With blood thinners
+              if (userMedications.some(userMed => 
+                  userMed.toLowerCase().includes("warfarin") || 
+                  userMed.toLowerCase().includes("coumadin") || 
+                  userMed.toLowerCase().includes("heparin") ||
+                  userMed.toLowerCase().includes("eliquis") ||
+                  userMed.toLowerCase().includes("xarelto"))) {
+                safetyIssues.push({
+                  medication: med,
+                  severity: "high",
+                  issue: "NSAIDs like " + med + " can increase risk of bleeding when taken with blood thinners."
+                });
+              }
+              
+              // With blood pressure medications
+              if (userMedications.some(userMed => 
+                  userMed.toLowerCase().includes("lisinopril") || 
+                  userMed.toLowerCase().includes("enalapril") || 
+                  userMed.toLowerCase().includes("losartan") ||
+                  userMed.toLowerCase().includes("valsartan") ||
+                  userMed.toLowerCase().includes("amlodipine"))) {
+                safetyIssues.push({
+                  medication: med,
+                  severity: "moderate",
+                  issue: "NSAIDs may reduce the effectiveness of blood pressure medications."
+                });
+              }
+            }
+            
+            // Antihistamine interactions
+            if (["diphenhydramine", "benadryl", "loratadine", "cetirizine", "claritin", "zyrtec"].includes(lowerMed)) {
+              // With sedatives
+              if (userMedications.some(userMed => 
+                  userMed.toLowerCase().includes("ambien") || 
+                  userMed.toLowerCase().includes("lunesta") || 
+                  userMed.toLowerCase().includes("valium") ||
+                  userMed.toLowerCase().includes("xanax"))) {
+                safetyIssues.push({
+                  medication: med,
+                  severity: "moderate",
+                  issue: "Antihistamines can increase sedative effects when combined with sleep medications or anti-anxiety drugs."
+                });
+              }
+            }
+            
+            // Decongestant interactions
+            if (["pseudoephedrine", "sudafed", "phenylephrine"].includes(lowerMed)) {
+              // With hypertension medications
+              if (userMedications.some(userMed => 
+                  userMed.toLowerCase().includes("lisinopril") || 
+                  userMed.toLowerCase().includes("metoprolol") || 
+                  userMed.toLowerCase().includes("amlodipine"))) {
+                safetyIssues.push({
+                  medication: med,
+                  severity: "high",
+                  issue: "Decongestants can increase blood pressure and may counteract hypertension medications."
+                });
+              }
+            }
+          }
+          
+          // Check for condition contraindications
+          if (userConditions.length > 0) {
+            // NSAIDs contraindications
+            if (["ibuprofen", "aspirin", "naproxen", "advil", "motrin", "aleve", "bayer"].includes(lowerMed)) {
+              // Stomach/GI conditions
+              if (userConditions.some(condition => 
+                  condition.toLowerCase().includes("ulcer") || 
+                  condition.toLowerCase().includes("gastritis") || 
+                  condition.toLowerCase().includes("gerd") ||
+                  condition.toLowerCase().includes("gi bleed"))) {
+                safetyIssues.push({
+                  medication: med,
+                  severity: "high",
+                  issue: "NSAIDs can worsen stomach/GI conditions and should be avoided."
+                });
+              }
+              
+              // Kidney conditions
+              if (userConditions.some(condition => 
+                  condition.toLowerCase().includes("kidney") || 
+                  condition.toLowerCase().includes("renal"))) {
+                safetyIssues.push({
+                  medication: med,
+                  severity: "high",
+                  issue: "NSAIDs can worsen kidney function in patients with kidney disease."
+                });
+              }
+            }
+            
+            // Acetaminophen contraindications
+            if (["acetaminophen", "tylenol", "paracetamol"].includes(lowerMed)) {
+              if (userConditions.some(condition => 
+                  condition.toLowerCase().includes("liver") || 
+                  condition.toLowerCase().includes("hepatitis") || 
+                  condition.toLowerCase().includes("cirrhosis"))) {
+                safetyIssues.push({
+                  medication: med,
+                  severity: "high",
+                  issue: "Acetaminophen should be used with caution in patients with liver disease or damage."
+                });
+              }
+            }
+            
+            // Decongestant contraindications
+            if (["pseudoephedrine", "sudafed", "phenylephrine"].includes(lowerMed)) {
+              if (userConditions.some(condition => 
+                  condition.toLowerCase().includes("hypertension") || 
+                  condition.toLowerCase().includes("high blood pressure") || 
+                  condition.toLowerCase().includes("heart") ||
+                  condition.toLowerCase().includes("cardiovascular"))) {
+                safetyIssues.push({
+                  medication: med,
+                  severity: "high",
+                  issue: "Decongestants can raise blood pressure and may worsen heart conditions."
+                });
+              }
+            }
+          }
+          
+          // Check for allergy contraindications
+          if (userProfile.allergies && userProfile.allergies.trim()) {
+            const allergiesText = userProfile.allergies.toLowerCase();
+            
+            // Direct allergies to medications
+            if (allergiesText.includes(lowerMed)) {
+              safetyIssues.push({
+                medication: med,
+                severity: "high",
+                issue: "You have a listed allergy to this medication or a similar compound."
+              });
+            }
+            
+            // Aspirin allergies
+            if ((lowerMed === "aspirin" || lowerMed === "ibuprofen" || lowerMed === "naproxen") && 
+                (allergiesText.includes("nsaid") || allergiesText.includes("aspirin"))) {
+              safetyIssues.push({
+                medication: med,
+                severity: "high",
+                issue: "You have a listed NSAID allergy which may include this medication."
+              });
+            }
+          }
+        });
+        
+        return safetyIssues;
+      }
+      
+      // Function to add safety warnings to recommendations
+      function addSafetyWarnings(recommendationHtml, safetyIssues) {
+        if (safetyIssues.length === 0) {
+          return recommendationHtml;
+        }
+        
+        // Group safety issues by severity
+        const highSeverity = safetyIssues.filter(issue => issue.severity === "high");
+        const moderateSeverity = safetyIssues.filter(issue => issue.severity === "moderate");
+        
+        let safetyHtml = "";
+        
+        // Add high severity warnings first
+        if (highSeverity.length > 0) {
+          safetyHtml += `<div class="safety-alert safety-danger">
+            <h4>⚠️ Important Safety Concerns</h4>
+            <p>The following recommendations may not be safe for you based on your profile:</p>
+            <ul>`;
+            
+          highSeverity.forEach(issue => {
+            safetyHtml += `<li><strong>${issue.medication}</strong>: ${issue.issue}</li>`;
+          });
+          
+          safetyHtml += `</ul>
+            <p><strong>Please consult with a healthcare professional before taking these medications.</strong></p>
+          </div>`;
+        }
+        
+        // Add moderate severity warnings
+        if (moderateSeverity.length > 0) {
+          safetyHtml += `<div class="safety-alert safety-warning">
+            <h4>⚠️ Potential Concerns</h4>
+            <p>The following recommendations should be used with caution:</p>
+            <ul>`;
+            
+          moderateSeverity.forEach(issue => {
+            safetyHtml += `<li><strong>${issue.medication}</strong>: ${issue.issue}</li>`;
+          });
+          
+          safetyHtml += `</ul>
+            <p>Consider discussing these with a pharmacist or healthcare provider.</p>
+          </div>`;
+        }
+        
+        // Insert the safety warnings at the beginning of the recommendation
+        return safetyHtml + recommendationHtml;
+      }
+      
+      // Function to handle recommendations that contain safety issues
+      function getSafeAlternatives(ailmentType, unsafeMeds) {
+        let alternatives = "";
+        
+        // Convert unsafeMeds to lowercase for easier comparison
+        const unsafeMedsLower = unsafeMeds.map(med => med.toLowerCase());
+        
+        // For cold/cough/congestion
+        if (ailmentType === "cold") {
+          // Check for safe antihistamines
+          if (!unsafeMedsLower.includes("loratadine") && !unsafeMedsLower.includes("claritin")) {
+            alternatives += "<li><strong>Loratadine (Claritin)</strong> for allergy symptoms</li>";
+          } else if (!unsafeMedsLower.includes("cetirizine") && !unsafeMedsLower.includes("zyrtec")) {
+            alternatives += "<li><strong>Cetirizine (Zyrtec)</strong> for allergy symptoms</li>";
+          }
+          
+          // Check for safe expectorants if guaifenesin is unsafe
+          if (!unsafeMedsLower.includes("guaifenesin") && !unsafeMedsLower.includes("mucinex")) {
+            alternatives += "<li><strong>Guaifenesin (Mucinex)</strong> to loosen mucus</li>";
+          }
+          
+          // Saline nasal sprays are generally safe for most people
+          alternatives += "<li><strong>Saline nasal spray</strong> to relieve congestion (safe for most people)</li>";
+          alternatives += "<li><strong>Honey and lemon tea</strong> may help soothe a sore throat (avoid honey in children under 1 year)</li>";
+        }
+        // For pain/headache/fever
+        else if (ailmentType === "pain") {
+          // If acetaminophen is safe, suggest it
+          if (!unsafeMedsLower.includes("acetaminophen") && !unsafeMedsLower.includes("tylenol")) {
+            alternatives += "<li><strong>Acetaminophen (Tylenol)</strong> for pain and fever</li>";
+          } 
+          // If ibuprofen is safe, suggest it
+          else if (!unsafeMedsLower.includes("ibuprofen") && !unsafeMedsLower.includes("advil") && !unsafeMedsLower.includes("motrin")) {
+            alternatives += "<li><strong>Ibuprofen (Advil, Motrin)</strong> for pain, inflammation, and fever</li>";
+          }
+          // If naproxen is safe, suggest it
+          else if (!unsafeMedsLower.includes("naproxen") && !unsafeMedsLower.includes("aleve")) {
+            alternatives += "<li><strong>Naproxen (Aleve)</strong> for pain and inflammation</li>";
+          }
+          
+          // Non-medication alternatives
+          alternatives += "<li>Cold/hot compresses for pain relief</li>";
+          alternatives += "<li>Rest and hydration</li>";
+        }
+        // For digestive issues
+        else if (ailmentType === "digestive") {
+          if (!unsafeMedsLower.includes("famotidine") && !unsafeMedsLower.includes("pepcid")) {
+            alternatives += "<li><strong>Famotidine (Pepcid)</strong> for heartburn and acid reflux</li>";
+          }
+          if (!unsafeMedsLower.includes("calcium carbonate") && !unsafeMedsLower.includes("tums")) {
+            alternatives += "<li><strong>Calcium carbonate (Tums)</strong> for quick heartburn relief</li>";
+          }
+          
+          // Dietary suggestions are generally safe
+          alternatives += "<li>Small, frequent meals instead of large ones</li>";
+          alternatives += "<li>Avoiding spicy, fatty, or acidic foods</li>";
+        }
+        
+        // If no suitable alternatives were found, provide general advice
+        if (alternatives === "") {
+          alternatives = "<li>Given your health profile, it's best to consult with a healthcare provider before taking OTC medications for your symptoms</li>";
+          alternatives += "<li>Rest, hydration, and proper nutrition can help support your body's natural healing</li>";
+        }
+        
+        return alternatives;
+      }
+
+      // Helper function to determine age category for dosing
+      function getAgeCategory(age) {
+        if (age < 2) return "infant";
+        if (age < 6) return "child2-5";
+        if (age < 12) return "child6-11";
+        if (age < 18) return "teen";
+        if (age < 65) return "adult";
+        return "senior";
+      }
+
+      // Helper function to add disclaimer to content
+      function addDisclaimerToContent() {
+        const disclaimer = document.createElement("div");
+        disclaimer.classList.add("disclaimer");
+        disclaimer.innerHTML = `
+          <hr>
+          <p><strong>Disclaimer:</strong> This is an AI-generated suggestion and should not replace professional medical advice. 
+          If your symptoms are severe or persistent, please consult with a healthcare provider.</p>
+          <p>Always read and follow the directions on product labels. Contact a healthcare professional if you have questions about which product is right for you.</p>
+        `;
+        diagnosisContent.appendChild(disclaimer);
+      }
+
+      // Main document ready handler
+      document.addEventListener("DOMContentLoaded", function () {
+        // DOM Elements
+        const medicationsList = document.getElementById("medicationsList");
+        const allergiesContainer =
+          document.getElementById("allergiesContainer");
+        const conditionsList = document.getElementById("conditionsList");
+        const ageDisplay = document.getElementById("ageDisplay");
+        const genderDisplay = document.getElementById("genderDisplay");
+        const bloodTypeDisplay = document.getElementById("bloodTypeDisplay");
+        const currentAilment = document.getElementById("currentAilment");
+        const getDiagnosisBtn = document.getElementById("getDiagnosisBtn");
+        const diagnosisResultCard = document.getElementById(
+          "diagnosisResultCard"
+        );
+        const loadingIndicator = document.getElementById("loadingIndicator");
+        const diagnosisContent = document.getElementById("diagnosisContent");
+
+        // Load user health information
+        loadUserProfile();
+        loadMedications();
+
+        // Get diagnosis button click handler
+        getDiagnosisBtn.addEventListener("click", function () {
+          const ailmentText = currentAilment.value.trim();
+
+          if (!ailmentText) {
+            showMessage("Please describe your ailment", "error");
+            return;
+          }
+
+          // Show the diagnosis card and loading indicator
+          diagnosisResultCard.style.display = "block";
+          loadingIndicator.style.display = "flex";
+          diagnosisContent.style.display = "none";
+          diagnosisContent.innerHTML = "";
+
+          // Scroll to the diagnosis card
+          diagnosisResultCard.scrollIntoView({ behavior: "smooth" });
+
+          // Get AI diagnosis
+          getAIDiagnosis(ailmentText);
+        });
+
+        // Function to load user profile
+        function loadUserProfile() {
+          fetch("/api/profile/")
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              userProfile = data;
+
+              // Update personal details
+              ageDisplay.textContent = calculateAge(data.date_of_birth);
+              genderDisplay.textContent = formatGender(data.gender);
+              bloodTypeDisplay.textContent = data.blood_type || "Not specified";
+
+              // Update allergies
+              if (data.allergies && data.allergies.trim()) {
+                allergiesContainer.innerHTML = `<p>${data.allergies}</p>`;
+              } else {
+                allergiesContainer.innerHTML = `<p class="empty-state">No allergies recorded</p>`;
+              }
+
+              // Update conditions if included in the API response
+              if (data.conditions && Array.isArray(data.conditions)) {
+                updateConditionsList(data.conditions);
+              } else {
+                // Otherwise fetch conditions separately
+                loadConditions();
+              }
+            })
+            .catch((error) => {
+              console.error("Error loading profile:", error);
+              ageDisplay.textContent = "Unknown";
+              genderDisplay.textContent = "Unknown";
+              bloodTypeDisplay.textContent = "Unknown";
+              allergiesContainer.innerHTML = `<p class="empty-state">Unable to load allergies</p>`;
+
+              // Try to load conditions separately anyway
+              loadConditions();
+            });
+        }
+
+        // Function to load conditions separately if needed
+        function loadConditions() {
+          // Check if we need to make a separate API call for conditions
+          // or if your API structure has them elsewhere
+
+          // For now, let's assume we need to handle empty conditions
+          conditionsList.innerHTML =
+            '<li class="empty-state">No medical conditions recorded</li>';
+
+          // You would add actual fetch code here if needed for your API structure
+        }
+
+        // Function to update conditions list
+        function updateConditionsList(conditions) {
+          conditionsList.innerHTML = "";
+          userConditions = [];
+
+          if (conditions.length > 0) {
+            conditions.forEach((condition) => {
+              // Extract the condition name whether it's an object or string
+              const conditionName =
+                typeof condition === "object" ? condition.name : condition;
+
+              const li = document.createElement("li");
+              li.textContent = conditionName;
+              conditionsList.appendChild(li);
+
+              userConditions.push(conditionName);
+            });
+          } else {
+            conditionsList.innerHTML =
+              '<li class="empty-state">No medical conditions recorded</li>';
+          }
+        }
+
+        // Function to load medications
+        function loadMedications() {
+          fetch("/api/medications/")
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              medicationsList.innerHTML = "";
+              userMedications = [];
+
+              if (data.medications && data.medications.length > 0) {
+                data.medications.forEach((med) => {
+                  const li = document.createElement("li");
+                  li.textContent = med.name;
+                  medicationsList.appendChild(li);
+
+                  userMedications.push(med.name);
+                });
+              } else {
+                medicationsList.innerHTML =
+                  '<li class="empty-state">No medications recorded</li>';
+              }
+            })
+            .catch((error) => {
+              console.error("Error loading medications:", error);
+              medicationsList.innerHTML =
+                '<li class="empty-state">Unable to load medications</li>';
+            });
+        }
+
+        // Function to get AI diagnosis with brand names and dosages
+        function getAIDiagnosis(ailmentText) {
+          // Prepare data for OpenAI API
+          const patientAge = calculateAge(userProfile.date_of_birth);
+          const promptData = {
+            ailment: ailmentText,
+            age: patientAge,
+            gender: formatGender(userProfile.gender),
+            allergies: userProfile.allergies || "None",
+            medications:
+              userMedications.length > 0 ? userMedications.join(", ") : "None",
+            conditions:
+              userConditions.length > 0 ? userConditions.join(", ") : "None",
+            blood_type: userProfile.blood_type || "Unknown",
+            request_specific: "Please provide recommendations for specific OTC medications by brand name, and include the appropriate dosage based on the patient's age and condition. Format your response with clear headings, bullet points for each medication with its brand name, active ingredient, specific dosage instructions based on the patient's age, and usage directions."
+          };
+
+          // For debugging - remove in production
+          console.log("Sending data to API:", promptData);
+
+          // First try the API, and if it fails, use a client-side fallback
+          fetch("/api/get-otc-recommendation/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: JSON.stringify(promptData),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                console.error("API error status:", response.status);
+                throw new Error("API request failed");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              // Hide loading indicator
+              loadingIndicator.style.display = "none";
+              diagnosisContent.style.display = "block";
+
+              // Display the AI recommendation
+              if (data.recommendation) {
+                // Extract medication names from the recommendation
+                const recommendedMeds = extractMedicationNames(data.recommendation);
+                
+                // Check if any recommended medications have safety issues
+                const safetyIssues = checkMedicationSafety(recommendedMeds);
+                
+                // Add safety warnings to the recommendation if needed
+                const recommendationWithWarnings = addSafetyWarnings(
+                  data.recommendation.replace(/\n/g, "<br>"), 
+                  safetyIssues
+                );
+                
+                diagnosisContent.innerHTML = recommendationWithWarnings;
+              } else {
+                diagnosisContent.innerHTML =
+                  '<p class="error">Unable to generate a recommendation. Please consult with a healthcare professional.</p>';
+              }
+
+              // Add disclaimer
+              addDisclaimerToContent();
+            })
+            .catch((error) => {
+              console.error("Error getting AI diagnosis:", error);
+              
+              // Implement a client-side fallback for when the API fails
+              console.log("Using client-side fallback for OTC recommendation");
+              
+              // Hide loading indicator
+              loadingIndicator.style.display = "none";
+              diagnosisContent.style.display = "block";
+              
+              // Generate a fallback recommendation based on symptom type and age
+              generateFallbackRecommendation(ailmentText, patientAge);
+            });
+        }
+        
+        // Function to generate fallback recommendations with brand names and dosages
+        function generateFallbackRecommendation(ailmentText, patientAge) {
+          let recommendationHtml = "";
+          let recommendedMeds = [];
+          let ailmentType = "";
+          const lowerAilment = ailmentText.toLowerCase();
+          
+          // Determine age category for dosing
+          const ageCategory = getAgeCategory(patientAge);
+          
+          // Cold/Respiratory symptoms
+          if (lowerAilment.includes("cough") || lowerAilment.includes("congestion") || 
+              lowerAilment.includes("runny nose") || lowerAilment.includes("cold") || 
+              lowerAilment.includes("sinus") || lowerAilment.includes("allergy")) {
+            
+            ailmentType = "cold";
+            // We'll dynamically build the list based on symptom keywords
+            const hasAllergy = lowerAilment.includes("allergy") || lowerAilment.includes("itchy") || lowerAilment.includes("sneez");
+            const hasCough = lowerAilment.includes("cough");
+            const hasCongestion = lowerAilment.includes("congestion") || lowerAilment.includes("stuffy");
+            const hasRunnyNose = lowerAilment.includes("runny nose") || lowerAilment.includes("drip");
+            
+            recommendationHtml = `
+              <h4>Cold & Respiratory Symptom Relief</h4>
+              <p>Based on your symptoms, here are recommended medications with appropriate dosages:</p>
+              <ul>
+            `;
+            
+            // For allergies or runny nose
+            if (hasAllergy || hasRunnyNose) {
+              switch(ageCategory) {
+                case "infant":
+                  recommendationHtml += `<li class="medication-item">
+                    <span class="medication-brand">Not recommended:</span> Most OTC antihistamines are not recommended for children under 2 years. Please consult a pediatrician.
+                  </li>`;
+                  break;
+                case "child2-5":
+                  recommendationHtml += `<li class="medication-item">
+                    <span class="medication-brand">Children's Zyrtec® (cetirizine):</span> 
+                    <div class="dosage-info">Dosage: 2.5mg (½ teaspoon of syrup) once daily</div>
+                    <div>Available as liquid formulation specifically for children.</div>
+                  </li>`;
+                  recommendedMeds.push("cetirizine", "zyrtec");
+                  break;
+                case "child6-11":
+                  recommendationHtml += `<li class="medication-item">
+                    <span class="medication-brand">Children's Claritin® (loratadine):</span>
+                    <div class="dosage-info">Dosage: 5mg (1 chewable tablet or 1 teaspoon of syrup) once daily</div>
+                  </li>`;
+                  recommendedMeds.push("loratadine", "claritin");
+                  break;
+                default:
+                  recommendationHtml += `<li class="medication-item">
+                    <span class="medication-brand">Claritin® (loratadine):</span>
+                    <div class="dosage-info">Dosage: 10mg (1 tablet) once daily</div>
+                    <div>Non-drowsy allergy relief.</div>
+                  </li>
+                  <li class="medication-item">
+                    <span class="medication-brand">Zyrtec® (cetirizine):</span>
+                    <div class="dosage-info">Dosage: 10mg (1 tablet) once daily</div>
+                    <div>May cause some drowsiness in some individuals.</div>
+                  </li>`;
+                  recommendedMeds.push("loratadine", "claritin", "cetirizine", "zyrtec");
+              }
+            }
+            
+            // For congestion
+            if (hasCongestion) {
+              if (ageCategory === "infant" || ageCategory === "child2-5") {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Little Remedies® Saline Spray/Drops:</span>
+                  <div class="dosage-info">Use as directed on package for nasal congestion relief</div>
+                  <div>Saline nasal sprays are generally safe for young children.</div>
+                </li>`;
+              } else if (ageCategory === "child6-11") {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Children's Sudafed PE® (phenylephrine):</span>
+                  <div class="dosage-info">Dosage: 5mg (1 chewable tablet) every 4 hours, not to exceed 30mg in 24 hours</div>
+                </li>`;
+                recommendedMeds.push("phenylephrine", "sudafed");
+              } else {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Sudafed® (pseudoephedrine):</span>
+                  <div class="dosage-info">Dosage: 60mg every 4-6 hours, not to exceed 240mg in 24 hours</div>
+                  <div>Available behind pharmacy counter. ID required for purchase.</div>
+                </li>`;
+                recommendedMeds.push("pseudoephedrine", "sudafed");
+              }
+            }
+            
+            // For cough
+            if (hasCough) {
+              if (ageCategory === "infant") {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Not recommended:</span> Cough medicines are not recommended for children under 2 years. Consult a pediatrician.
+                </li>`;
+              } else if (ageCategory === "child2-5") {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Honey (for children over 1 year):</span>
+                  <div class="dosage-info">Dosage: ½ to 1 teaspoon as needed</div>
+                  <div>Studies show honey can be effective for cough in children. Do NOT give to infants under 1 year.</div>
+                </li>`;
+              } else if (ageCategory === "child6-11") {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Children's Delsym® (dextromethorphan):</span>
+                  <div class="dosage-info">Dosage: 15mg every 4 hours or 30mg extended-release every 12 hours, not to exceed 60mg in 24 hours</div>
+                </li>`;
+                recommendedMeds.push("dextromethorphan", "delsym");
+              } else {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Delsym® 12-Hour (dextromethorphan):</span>
+                  <div class="dosage-info">Dosage: 60mg (2 teaspoons) every 12 hours</div>
+                  <div>Extended-release formulation for cough suppression.</div>
+                </li>
+                <li class="medication-item">
+                  <span class="medication-brand">Mucinex® (guaifenesin):</span>
+                  <div class="dosage-info">Dosage: 600mg extended-release (1 tablet) every 12 hours with full glass of water</div>
+                  <div>Helps loosen mucus and thin bronchial secretions.</div>
+                </li>`;
+                recommendedMeds.push("dextromethorphan", "delsym", "guaifenesin", "mucinex");
+              }
+            }
+            
+            recommendationHtml += `
+              </ul>
+              <h4>Additional Recommendations</h4>
+              <ul>
+                <li>Stay hydrated with plenty of fluids</li>
+                <li>Use a humidifier to add moisture to the air</li>
+                <li>Get plenty of rest</li>
+              </ul>
+            `;
+          } 
+          // Pain/Fever symptoms
+          else if (lowerAilment.includes("headache") || lowerAilment.includes("pain") || 
+                 lowerAilment.includes("fever") || lowerAilment.includes("ache") || 
+                 lowerAilment.includes("sore")) {
+            
+            ailmentType = "pain";
+            const hasFever = lowerAilment.includes("fever");
+            const hasInflammation = lowerAilment.includes("swelling") || lowerAilment.includes("inflammation");
+            
+            recommendationHtml = `
+              <h4>Pain & Fever Relief</h4>
+              <p>Based on your symptoms, here are recommended medications with appropriate dosages:</p>
+              <ul>
+            `;
+            
+            // Add acetaminophen for pain/fever
+            if (ageCategory === "infant") {
+              recommendationHtml += `<li class="medication-item">
+                <span class="medication-brand">Infant's Tylenol® (acetaminophen):</span> 
+                <div class="dosage-info">For infants under 2 years, consult with pediatrician for exact dosing based on weight</div>
+                <div>${hasFever ? "Especially effective for reducing fever." : "Effective for pain relief."}</div>
+              </li>`;
+              recommendedMeds.push("acetaminophen", "tylenol");
+            } else if (ageCategory === "child2-5") {
+              recommendationHtml += `<li class="medication-item">
+                <span class="medication-brand">Children's Tylenol® (acetaminophen):</span>
+                <div class="dosage-info">Dosage: 160mg (5mL of liquid) every 4-6 hours, not to exceed 5 doses in 24 hours</div>
+                <div>${hasFever ? "Especially effective for reducing fever." : "Effective for pain relief."}</div>
+              </li>`;
+              recommendedMeds.push("acetaminophen", "tylenol");
+            } else if (ageCategory === "child6-11") {
+              recommendationHtml += `<li class="medication-item">
+                <span class="medication-brand">Children's Tylenol® (acetaminophen):</span>
+                <div class="dosage-info">Dosage: 240-320mg (7.5-10mL of liquid or 1-2 chewable tablets) every 4-6 hours, not to exceed 5 doses in 24 hours</div>
+                <div>${hasFever ? "Especially effective for reducing fever." : "Effective for pain relief."}</div>
+              </li>`;
+              recommendedMeds.push("acetaminophen", "tylenol");
+              
+              // Add ibuprofen for children 6-11 if appropriate (better for inflammation)
+              if (hasInflammation) {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Children's Motrin® or Advil® (ibuprofen):</span>
+                  <div class="dosage-info">Dosage: 100mg (5mL or 1 chewable tablet) every 6-8 hours, not to exceed 400mg in 24 hours</div>
+                  <div>Especially effective for reducing inflammation and swelling.</div>
+                </li>`;
+                recommendedMeds.push("ibuprofen", "motrin", "advil");
+              }
+            } else if (ageCategory === "teen") {
+              recommendationHtml += `<li class="medication-item">
+                <span class="medication-brand">Regular Strength Tylenol® (acetaminophen):</span>
+                <div class="dosage-info">Dosage: 650mg (2 tablets) every 4-6 hours, not to exceed 3250mg in 24 hours</div>
+                <div>${hasFever ? "Especially effective for reducing fever." : "Effective for pain relief."}</div>
+              </li>
+              <li class="medication-item">
+                <span class="medication-brand">Advil® or Motrin® (ibuprofen):</span>
+                <div class="dosage-info">Dosage: 200-400mg (1-2 tablets) every 4-6 hours, not to exceed 1200mg in 24 hours</div>
+                <div>${hasInflammation ? "Especially effective for reducing inflammation and swelling." : "Effective for pain relief."}</div>
+              </li>`;
+              recommendedMeds.push("acetaminophen", "tylenol", "ibuprofen", "advil", "motrin");
+            } else if (ageCategory === "adult") {
+              recommendationHtml += `<li class="medication-item">
+                <span class="medication-brand">Extra Strength Tylenol® (acetaminophen):</span>
+                <div class="dosage-info">Dosage: 1000mg (2 tablets) every 6 hours, not to exceed 3000mg in 24 hours</div>
+                <div>${hasFever ? "Especially effective for reducing fever." : "Effective for pain relief."}</div>
+              </li>
+              <li class="medication-item">
+                <span class="medication-brand">Advil® or Motrin® (ibuprofen):</span>
+                <div class="dosage-info">Dosage: 200-400mg (1-2 tablets) every 4-6 hours, not to exceed 1200mg in 24 hours</div>
+                <div>${hasInflammation ? "Especially effective for reducing inflammation and swelling." : "Effective for pain relief."}</div>
+              </li>`;
+              
+              // Add naproxen for longer-lasting relief
+              if (hasInflammation) {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Aleve® (naproxen sodium):</span>
+                  <div class="dosage-info">Dosage: 220mg (1 tablet) every 8-12 hours or 440mg (2 tablets) as first dose then 220mg every 12 hours</div>
+                  <div>Longer-lasting relief for inflammation and pain.</div>
+                </li>`;
+                recommendedMeds.push("naproxen", "aleve");
+              }
+              
+              recommendedMeds.push("acetaminophen", "tylenol", "ibuprofen", "advil", "motrin");
+            } else if (ageCategory === "senior") {
+              recommendationHtml += `<li class="medication-item">
+                <span class="medication-brand">Regular Strength Tylenol® (acetaminophen):</span>
+                <div class="dosage-info">Dosage: 650mg (2 tablets) every 6 hours, not to exceed 3000mg in 24 hours</div>
+                <div>Generally safer than NSAIDs for older adults. ${hasFever ? "Effective for reducing fever." : "Effective for pain relief."}</div>
+              </li>
+              <li class="medication-item">
+                <span class="medication-brand">NSAIDs (e.g., Advil®, Motrin®, Aleve®):</span>
+                <div class="dosage-info">Use with caution: NSAIDs may increase risk of stomach, heart, and kidney problems in older adults</div>
+                <div>If needed, use lowest effective dose for shortest duration. Consider Tylenol® instead.</div>
+              </li>`;
+              recommendedMeds.push("acetaminophen", "tylenol", "ibuprofen", "advil", "motrin", "naproxen", "aleve");
+            }
+            
+            recommendationHtml += `
+              </ul>
+              <h4>Additional Recommendations</h4>
+              <ul>
+                <li>Apply cold or warm compress to affected areas</li>
+                <li>Rest and avoid strenuous activity</li>
+                <li>Stay hydrated</li>
+              </ul>
+            `;
+          } 
+          // Digestive symptoms
+          else if (lowerAilment.includes("heartburn") || lowerAilment.includes("acid") || 
+                 lowerAilment.includes("stomach") || lowerAilment.includes("indigestion") || 
+                 lowerAilment.includes("diarrhea") || lowerAilment.includes("nausea")) {
+            
+            ailmentType = "digestive";
+            const hasHeartburn = lowerAilment.includes("heartburn") || lowerAilment.includes("acid") || lowerAilment.includes("reflux");
+            const hasDiarrhea = lowerAilment.includes("diarrhea") || lowerAilment.includes("loose");
+            const hasNausea = lowerAilment.includes("nausea") || lowerAilment.includes("vomit");
+            
+            recommendationHtml = `
+              <h4>Digestive Relief</h4>
+              <p>Based on your symptoms, here are recommended medications with appropriate dosages:</p>
+              <ul>
+            `;
+            
+            // Add antacids for heartburn
+            if (hasHeartburn) {
+              if (ageCategory === "infant" || ageCategory === "child2-5") {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Not recommended:</span> Antacids are generally not recommended for young children without medical supervision
+                </li>`;
+              } else if (ageCategory === "child6-11") {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Children's Pepto® (calcium carbonate):</span>
+                  <div class="dosage-info">Follow product-specific instructions for children 6-11 years</div>
+                  <div>Not all antacids are appropriate for children.</div>
+                </li>`;
+                recommendedMeds.push("calcium carbonate", "pepto");
+              } else {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Tums Ultra Strength® (calcium carbonate):</span>
+                  <div class="dosage-info">Dosage: 1-2 tablets as needed for heartburn, do not exceed 7 tablets in 24 hours</div>
+                  <div>Fast-acting relief for heartburn and acid indigestion.</div>
+                </li>
+                <li class="medication-item">
+                  <span class="medication-brand">Pepcid AC® (famotidine):</span>
+                  <div class="dosage-info">Dosage: ${ageCategory === "senior" ? "20mg (1 tablet) daily" : "20mg (1 tablet) up to twice daily"}</div>
+                  <div>Reduces acid production for longer-lasting relief.</div>
+                </li>`;
+                
+                if (ageCategory !== "senior") {
+                  recommendationHtml += `<li class="medication-item">
+                    <span class="medication-brand">Prilosec OTC® (omeprazole):</span>
+                    <div class="dosage-info">Dosage: 20mg (1 tablet) daily before breakfast, for 14 days</div>
+                    <div>For recurrent heartburn only. Not for immediate relief.</div>
+                  </li>`;
+                  recommendedMeds.push("omeprazole", "prilosec");
+                }
+                
+                recommendedMeds.push("calcium carbonate", "tums", "famotidine", "pepcid");
+              }
+            }
+            
+            // Add anti-diarrheal if needed and age-appropriate
+            if (hasDiarrhea) {
+              if (ageCategory === "infant" || ageCategory === "child2-5" || ageCategory === "child6-11") {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Not recommended:</span> Anti-diarrheal medications are generally not recommended for children under 12 years without medical supervision
+                </li>`;
+              } else {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Imodium A-D® (loperamide):</span>
+                  <div class="dosage-info">Dosage: ${ageCategory === "teen" ? "Initial dose 2mg (1 caplet) after first loose stool, then 1 caplet after each subsequent loose stool, not to exceed 4 caplets in 24 hours" : "Initial dose 4mg (2 caplets) after first loose stool, then 2mg (1 caplet) after each subsequent loose stool, not to exceed 8mg (4 caplets) in 24 hours"}</div>
+                  <div>${ageCategory === "senior" ? "Monitor for constipation which can be more problematic in older adults." : "For relief of diarrhea."}</div>
+                </li>`;
+                recommendedMeds.push("loperamide", "imodium");
+              }
+            }
+            
+            // Add anti-nausea if needed and age-appropriate
+            if (hasNausea) {
+              if (ageCategory === "infant" || ageCategory === "child2-5" || ageCategory === "child6-11") {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Not recommended:</span> OTC anti-nausea medications are generally not recommended for children under 12 years without medical supervision
+                </li>`;
+              } else if (ageCategory === "senior") {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Use with caution:</span> Anti-nausea medications may cause more side effects in older adults including confusion and urinary retention. Start with lowest dose.
+                </li>`;
+              } else {
+                recommendationHtml += `<li class="medication-item">
+                  <span class="medication-brand">Dramamine® (dimenhydrinate):</span>
+                  <div class="dosage-info">Dosage: ${ageCategory === "teen" ? "50mg (1 tablet) every 4-6 hours, not to exceed 200mg in 24 hours" : "50-100mg (1-2 tablets) every 4-6 hours, not to exceed 400mg in 24 hours"}</div>
+                  <div>May cause drowsiness.</div>
+                </li>
+                <li class="medication-item">
+                  <span class="medication-brand">Bonine® (meclizine):</span>
+                  <div class="dosage-info">Dosage: ${ageCategory === "teen" ? "25mg (1 tablet) once daily" : "25-50mg (1-2 tablets) once daily"}</div>
+                  <div>May cause less drowsiness than Dramamine.</div>
+                </li>`;
+                recommendedMeds.push("dimenhydrinate", "dramamine", "meclizine", "bonine");
+              }
+            }
+            
+            recommendationHtml += `
+              </ul>
+              <h4>Additional Recommendations</h4>
+              <ul>
+                <li>Eat smaller, more frequent meals</li>
+                <li>Avoid fatty, spicy, or acidic foods</li>
+                <li>Stay hydrated with clear fluids</li>
+              </ul>
+            `;
+          } 
+          // General/unknown symptoms
+          else {
+            recommendationHtml = `
+              <h4>General Health Recommendation</h4>
+              <p>Based on your described symptoms, we recommend consulting with a healthcare provider for proper diagnosis. In the meantime:</p>
+              <ul>
+                <li>Rest and allow your body time to recover</li>
+                <li>Stay hydrated with water and clear fluids</li>
+                <li>Monitor your symptoms and seek medical attention if they worsen</li>
+              </ul>
+            `;
+            
+            // No specific medications to check for safety issues
+            recommendedMeds = [];
+          }
+          
+          // Check if any recommended medications have safety issues
+          const safetyIssues = checkMedicationSafety(recommendedMeds);
+          
+          // Display the fallback recommendation with safety checks
+          if (safetyIssues.length > 0) {
+            // Get unsafe medications
+            const unsafeMeds = safetyIssues.map(issue => issue.medication);
+            
+            // Generate alternatives based on ailment type and unsafe medications
+            const alternatives = getSafeAlternatives(ailmentType, unsafeMeds);
+            
+            // Add safety warnings to the recommendation
+            const recommendationWithWarnings = addSafetyWarnings(recommendationHtml, safetyIssues);
+            
+            // Add alternatives section
+            let finalHtml = recommendationWithWarnings;
+            if (alternatives) {
+              finalHtml += `
+                <h4>Safer Alternatives For You</h4>
+                <p>Based on your health profile, these alternatives may be more suitable:</p>
+                <ul>${alternatives}</ul>
+              `;
+            }
+            
+            diagnosisContent.innerHTML = finalHtml;
+          } else {
+            diagnosisContent.innerHTML = recommendationHtml;
+          }
+          
+          // Add disclaimer
+          addDisclaimerToContent();
+        }
+      });
+    </script>
+  </body>
+</html>
+{% endblock %}
