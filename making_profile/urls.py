@@ -10,20 +10,16 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('change_password_page/', views.change_password_page, name='change_password_page'),
     path('changepw/', views.change_password, name='change_password'),
-    
-    # path('/', views.profile_view, name='profile')
-    # path('profile/', views.profile_view, name='profile'),  # For viewing the profile after setup
-    # path('medicine_chart/', views.medicine_chart, name='medicine_chart'),
+    path('api/profile/', views.profile_api, name='profile_api'),
+    path('api/profile/update/', views.profile_update_api, name='profile_update_api'),
     path('medicine_dboard', views.medication_dashboard, name='medication_dashboard'),
-    # path('add/', views.add_medication, name='add_medication'),
-    # path('edit/<int:medication_id>/', views.edit_medication, name='edit_medication'),
-    # path('delete/<int:medication_id>/', views.delete_medication, name='delete_medication'),
-    # path('toggle-dose/<int:tracking_id>/<int:dose_index>/', views.toggle_dose, name='toggle_dose'),
-    # path('reset-tracking/', views.reset_tracking, name='reset_tracking'),
+    path('pharmacy-finder/', views.pharmacy_finder, name='pharmacy_finder'),
    path('api/medications/', views.medication_list, name='medication_list'),  # Handles both GET and POST
     path('api/medications/<int:medication_id>/', views.medication_detail, name='medication_detail'),  # Handles PUT and DELETE
-    
+    path('api/medications/<int:medication_id>/refill/', views.refill_medication, name='refill_medication'),
+     path('otc-prescription/', views.otc_prescription_view, name='otc_prescription'),
     # API endpoints for tracking
+    path('api/get-otc-recommendation/', views.get_otc_recommendation, name='get_otc_recommendation'),
     path('api/tracking/<str:date>/', views.tracking_data, name='tracking_data'),  # Handles both GET and POST
     
 ]
