@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'making_profile'
+    'making_profile',
+    'medication'
 ]
 
 MIDDLEWARE = [
@@ -118,7 +119,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+# Add this line to settings.py
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Add this to your settings.py
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
