@@ -32,7 +32,7 @@ jobs:
       - name: Merge conflicting migrations (non-interactive)
         run: |
           source venv/bin/activate
-          python manage.py makemigrations --merge
+          DJANGO_SETTINGS_MODULE=RxHarmony.settings python manage.py makemigrations --merge --noinput
 
       - name: Run Django migrations
         run: |
