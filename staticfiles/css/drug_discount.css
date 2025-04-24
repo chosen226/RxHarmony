@@ -1,0 +1,235 @@
+:root {
+  --primary-color: black;
+  --primary-dark: black;
+  --secondary-color: #e74c3c;
+  --text-color: #333;
+  --light-gray: #f8f9fa;
+  --medium-gray: #ddd;
+  --dark-gray: #777;
+  --success-color: #2ecc71;
+  --warning-color: #f39c12;
+  --danger-color: #e74c3c;
+  --card-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Updated styles for the discount finder page */
+.discount-finder-section {
+  margin: 30px 0;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Card Styles */
+.card {
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: var(--card-shadow);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0;
+  padding: 15px 20px;
+}
+
+.card-header h2,
+.card-header h3 {
+  margin: 0;
+  color: #000;
+  font-size: 1.4rem;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* Form Styles */
+.discount-form {
+  margin-bottom: 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--medium-gray);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Results Container */
+.results-container {
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: var(--light-gray);
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
+.discount-content {
+  padding: 15px;
+  line-height: 1.8;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Discount Option Styles */
+.discount-option {
+  background-color: white;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: var(--card-shadow);
+  clear: both;
+  display: block;
+  overflow: hidden;
+}
+
+/* Additional discount section styling */
+.additional-discount {
+  background-color: #f8f8f8;
+  border-left: 3px solid var(--success-color);
+  padding: 10px 15px;
+  margin: 10px 0;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Fix for any remaining nested cards */
+.discount-option .discount-option {
+  background-color: #f0f0f0;
+  margin-top: 10px;
+  border: 1px dashed var(--medium-gray);
+}
+
+.discount-option h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+.savings-badge {
+  display: inline-block;
+  background-color: var(--success-color);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.discount-details {
+  margin-top: 10px;
+}
+
+.discount-details p {
+  margin: 5px 0;
+}
+
+/* Message Container */
+.message-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.message {
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  color: white;
+  background-color: var(--primary-color);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease-out;
+}
+
+.message.success {
+  background-color: var(--success-color);
+}
+
+.message.error {
+  background-color: var(--danger-color);
+}
+
+.message.info {
+  background-color: var(--primary-color);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Disclaimer */
+.disclaimer {
+  margin-top: 20px;
+  padding-top: 15px;
+  font-size: 0.9rem;
+  color: var(--dark-gray);
+}

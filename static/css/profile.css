@@ -1,0 +1,474 @@
+/* Main profile styles */
+.profile-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 20px 0;
+}
+
+/* Make the daily tracking list container scrollable */
+#dailyTrackingList {
+  max-height: 100px; /* Set height to show approximately 2 cards */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 5px;
+  scroll-snap-type: y proximity; /* Enable snap scrolling but less strict than medication cards */
+}
+
+/* Style for each daily tracking card */
+#dailyTrackingList .medication-card {
+  scroll-snap-align: start; /* Makes cards snap into view when scrolling */
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+/* Style the scrollbar for better visibility */
+#dailyTrackingList::-webkit-scrollbar {
+  width: 8px;
+}
+
+#dailyTrackingList::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+#dailyTrackingList::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 4px;
+}
+
+/* Add a subtle shadow at the bottom of the container to indicate more content */
+#dailyTrackingList::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.8), transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+#dailyTrackingList:not(.at-bottom)::after {
+  opacity: 1;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Card styles */
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* Grid layout */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 992px) {
+  .profile-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+/* User info styles */
+.info-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.info-item {
+  margin-bottom: 15px;
+}
+
+.info-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.info-value {
+  font-size: 16px;
+  color: #333;
+}
+
+.empty-state {
+  color: #999;
+  font-style: italic;
+}
+
+/* Action buttons */
+.btn {
+  display: inline-block;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 14px;
+  line-height: 1.5;
+  border-radius: 4px;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #000000;
+  border-color: #000000;
+}
+
+.btn-primary:hover {
+  background-color: #000000;
+  border-color: #000000;
+}
+
+.medication-cards {
+  max-height: 270px; /* Fixed height for scrollable area */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 5px;
+  scroll-snap-type: y mandatory; /* Enable snap scrolling */
+}
+
+/* Style for each medication card */
+.medication-card {
+  scroll-snap-align: start; /* Makes each card snap into view */
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+/* Style the scrollbar for better visibility */
+.medication-cards::-webkit-scrollbar {
+  width: 8px;
+}
+
+.medication-cards::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+.medication-cards::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 4px;
+}
+
+.medication-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.medication-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.medication-details {
+  margin-bottom: 15px;
+}
+
+.progress {
+  height: 12px;
+  background-color: #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 6px;
+}
+
+.bg-primary {
+  background-color: #000000;
+}
+
+.bg-warning {
+  background-color: #ff9500;
+}
+
+.bg-danger {
+  background-color: #ff3b30;
+}
+
+/* Calendar styles */
+.calendar {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.calendar-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 10px;
+}
+
+.calendar-nav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: black;
+  font-size: 18px;
+}
+
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.calendar-table th {
+  padding: 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+}
+
+.calendar-table td {
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+}
+
+.calendar-table td.today {
+  background-color: black;
+  color: white;
+}
+
+.calendar-table td.has-med {
+  position: relative;
+}
+
+.calendar-table td.has-med::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: black;
+}
+
+/* Allergy dropdown */
+.dropdown {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.dropdown-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: #f5f7fa;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dropdown-toggle.active {
+  border-color: black;
+}
+
+.dropdown-menu {
+  display: none;
+  background-color: white;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 10px 15px;
+  margin-top: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+/* Refills carousel styles */
+.refills-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin: 10px 0;
+}
+
+.refills-container {
+  width: 100%;
+  overflow: hidden;
+  padding: 0 10px;
+}
+
+.refills-slider {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+
+.refill-item {
+  min-width: 100%; /* Each item takes full width of container */
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: center;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin: 0 5px;
+  background-color: #f5f7fa;
+}
+
+.refill-nav-btn {
+  background: none;
+  border: none;
+  color: black;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.refill-nav-btn:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.refill-prev {
+  left: 0;
+}
+
+.refill-next {
+  right: 0;
+}
+
+.no-refills {
+  width: 100%;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 15px 0;
+}
+/* Medication form styles */
+.medication-form {
+  display: none;
+}
+
+.medication-form.show {
+  display: block;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f5f7fa;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: black;
+}
+
+/* Upcoming refills section */
+.refills-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.refill-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.refill-item:last-child {
+  border-bottom: none;
+}
+
+.refill-date {
+  font-size: 12px;
+  color: #666;
+}
+
+.refill-med {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}

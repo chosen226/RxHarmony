@@ -1,0 +1,279 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f7f8fa;
+  color: #333;
+}
+
+/* Header Navigation */
+.nav-header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+  margin-right: 40px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+}
+
+.nav-link {
+  color: #666;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.nav-link.active {
+  color: #333;
+  font-weight: 500;
+}
+
+.profile-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.notification-icon,
+.profile-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+/* Main Content */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin-bottom: 25px;
+}
+
+h2 {
+  font-size: 22px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Map Styling */
+#map {
+  height: 400px;
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Table Styling */
+.table-container {
+  max-height: 600px;
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+.card:first-child {
+  margin-top: 60px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  background-color: #f5f5f7;
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid #eee;
+}
+
+td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+.place-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.place-distance {
+  color: #666;
+  font-size: 14px;
+}
+
+.place-types,
+.place-address {
+  font-size: 14px;
+  color: #666;
+  margin: 5px 0;
+}
+
+.highlight {
+  color: #000000;
+  font-weight: 500;
+}
+
+/* Button styling */
+.details-button {
+  background-color: #000000;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.details-button:hover {
+  background-color: #000000;
+}
+
+/* Details section */
+.place-details {
+  background-color: white;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 6px;
+  font-size: 14px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.place-details.open {
+  border-left: 4px solid #4caf50;
+}
+
+.place-details.closed {
+  border-left: 4px solid #f44336;
+}
+
+.hours-list {
+  margin: 5px 0;
+  padding-left: 20px;
+  list-style-type: none;
+}
+
+.hours-list li {
+  margin-bottom: 3px;
+}
+
+/* Loader styles */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #000000;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+.table-loader {
+  padding: 30px 0;
+  text-align: center;
+  color: #666;
+}
+
+.search-container {
+  display: flex;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.search-button {
+  background-color: #000000;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pac-container {
+  z-index: 1051 !important;
+  font-family: "Segoe UI", Arial, sans-serif;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  border-top: none;
+}
+
+.pac-item {
+  padding: 8px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.pac-item:hover {
+  background-color: #f5f5f7;
+}
+
+.pac-item-query {
+  font-size: 14px;
+  color: #333;
+}
+.search-button:hover {
+  background-color: #000000;
+}
+
+.location-button {
+  background-color: #f5f5f7;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.location-button:hover {
+  background-color: #e7e7e9;
+}
