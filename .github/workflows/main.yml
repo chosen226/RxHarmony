@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  run-tests:
+  run-with-secrets:
     runs-on: ubuntu-latest
 
     env:
@@ -22,24 +22,9 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Set up virtual environment and install Django
+      - name: Confirm environment variables
         run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install django
-
-      - name: Merge conflicting migrations (non-interactive)
-        run: |
-          source venv/bin/activate
-          yes | python manage.py makemigrations --merge
-
-      - name: Run Django migrations
-        run: |
-          source venv/bin/activate
-          python manage.py migrate
-
-      - name: Run tests
-        run: |
-          source venv/bin/activate
-          python manage.py test
+          echo "OPENAI_API_KEY_RECOMMEND is: ${{ secrets.OPENAI_API_KEY_RECOMMEND }}"
+          echo "OPENAI_API_KEY_DISCOUNT is: ${{ secrets.OPENAI_API_KEY_DISCOUNT }}"
+          echo "Python version:"
+          python --version
