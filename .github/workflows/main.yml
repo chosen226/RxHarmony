@@ -22,12 +22,17 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Set up virtual environment and install Django
         run: |
           python -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
           pip install django
+
+      - name: Merge conflicting migrations
+        run: |
+          source venv/bin/activate
+          python manage.py makemigrations --merge
 
       - name: Run Django migrations
         run: |
